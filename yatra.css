@@ -4,3 +4,6 @@
 .online-payment-details p{margin:8px 0;color:#5d5149}
 .upi-recipient strong,.upi-id strong{color:#642c2a;overflow-wrap:anywhere}
 .upi-fee{font-size:1.05rem}
+body.yatra-page{position:relative;isolation:isolate;background:transparent}
+body.yatra-page::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(135deg,rgba(55,37,31,.34),rgba(255,248,235,.80)),url("group-gathering.jpg") center/cover no-repeat}
+.yatra-hero{background:linear-gradient(135deg,rgba(255,250,240,.86),rgba(247,234,211,.76))}
