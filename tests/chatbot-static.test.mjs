@@ -41,6 +41,7 @@ test('frontend renders citations only as safe links and distinguishes AI interpr
 test('mobile widget uses compact launcher and viewport-bounded chat panel', () => {
   assert.match(ui, /@media\(max-width:480px\)/);
   assert.match(ui, /width:56px;height:56px/);
+  assert.match(ui, /border:2px solid #fff;border-radius:5px/);
   assert.match(ui, /height:min\(680px,calc\(100dvh - 88px\)\)/);
 });
 
