@@ -1,36 +1,35 @@
-# Raman Parikar chatbot
+# Tabhai Prabhu chatbot
 
-## Architecture and scope
+## What it uses
 
-The static GitHub Pages site loads one shared `chatbot.js` widget. It sends only the current question and selected language to the authenticated `raman-chat` Supabase Edge Function. No chat history or personal profile is stored. The function contains 14 selected scripture passages (Bhagavad-gītā, Śrīmad-Bhāgavatam, Śrī Caitanya-caritāmṛta and Nectar of Instruction) plus facts taken from the published website. It returns source text and citations from that fixed collection; AI-generated interpretation is explicitly labeled and constrained to retrieved excerpts. It does not have the complete texts or unpublished organisation material.
+The static GitHub Pages site loads the shared `chatbot.js` widget on each current page. It calls the `raman-chat` Supabase Edge Function with the current question and language preference. The browser stores no chat history or voice recordings. Voice input/output use browser speech APIs when supported.
 
-The function uses a small in-memory, per-isolate limiter (30 requests per 10 minutes per observed client IP). This is a best-effort abuse control, not a globally shared quota. Supabase JWT verification and exact-origin CORS are enabled. Questions and IP addresses are not logged or persisted by this code. Do not enter sensitive personal information into the chat.
+The function retrieves from a curated set of 19 checked passages rather than a full-text archive. The collection covers Bhagavad-gītā, Śrīmad-Bhāgavatam, Śrī Caitanya-caritāmṛta, Śrī Brahma-saṁhitā and Nectar of Instruction. Verse text and citations come from Vedabase links included with each record. `organization-knowledge.ts` is the editable English/Hindi FAQ source; update it when public website details, event dates or policies change. Only publish verified information.
 
-## One-time provider setup for generated explanations
+Greetings, thanks and casual conversation work without scripture citations. If provider credentials are configured, these replies and source-grounded spiritual explanations use Cloudflare Workers AI. Without credentials, casual replies use a short local response and spiritual answers still return matched verses with curated meanings. The function never invents a verse or citation and does not claim to retrieve entire books.
 
-The function returns curated passage text and meanings without external credentials. Generated explanations require a Cloudflare account and an API token restricted to Workers AI read/inference access. Add these **server-side only** in Supabase Dashboard → Project `akfnlsyvjlxkdibfhuzy` → Edge Functions → Secrets:
+## Required one-time setup for AI-generated replies
+
+The active Edge Function currently has no Cloudflare credentials configured, so AI-generated wording cannot run. To enable it, create a Cloudflare account and a token limited to Workers AI inference, then add these secrets in Supabase Dashboard → Project `akfnlsyvjlxkdibfhuzy` → Edge Functions → Secrets:
 
 - `CLOUDFLARE_ACCOUNT_ID`
 - `CLOUDFLARE_API_TOKEN`
 
-Never add either value to GitHub, the website, or a browser. The function fails closed to curated text if the secrets are absent or the model request fails.
+Keep both values server-side. Never add them to this repository or browser code. No paid plan or paid fallback is enabled.
 
-## Cost expectations
+## Cost and limitations
 
-Supabase is currently on its Free plan. Cloudflare Workers AI Free currently includes a daily free inference allocation; usage beyond that allocation is rejected on the Free plan rather than billed. The design has no paid fallback. At low traffic this should remain ₹0, but provider quotas and plans can change. Supabase Free projects may pause after a period of inactivity. Recheck current terms before relying on a cost guarantee.
+GitHub Pages and Supabase are currently used on free service tiers. Cloudflare Workers AI's Free tier currently provides up to 10,000 neurons per day; requests stop when that allocation is exhausted. The selected model is listed as available on Free tier. There is no automatic paid upgrade or fallback. Current plans and limits can change, so verify provider terms before relying on the ₹0–₹100/year target. Supabase Free projects may pause during extended inactivity. Browser speech recognition availability and voice selection vary by browser, operating system and installed voices. Typing remains available.
 
-## Release checklist
+## Verification and deployment
 
-1. Deploy `supabase/functions/raman-chat/index.ts` to project `akfnlsyvjlxkdibfhuzy` with JWT verification enabled.
-2. Set the two Cloudflare secrets above if AI explanations are desired.
-3. Publish `chatbot.js` and include `<script src="chatbot.js?v=1" defer></script>` on each HTML page.
-4. Verify an OPTIONS preflight from `https://ramanparikar.github.io`, a website FAQ, a scripture question, and a rejected foreign origin. Do not submit the production Yatra form as a smoke test; it creates a real registration.
+Deploy `supabase/functions/raman-chat/index.ts` plus `organization-knowledge.ts` with JWT verification enabled. Confirm exact-origin CORS from `https://ramanparikar.github.io`. Then publish the widget and the script reference on all HTML pages. A live Yatra form submission creates a real attendee record, so do not use the production form as a smoke test without arranging a clearly identified test record with the organisers.
 
-## Verified primary references
+## Primary references
 
-- [Cloudflare Workers AI pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/)
+- [Cloudflare Workers AI pricing and quotas](https://developers.cloudflare.com/workers-ai/platform/pricing/)
 - [Cloudflare Workers AI data usage](https://developers.cloudflare.com/workers-ai/platform/data-usage/)
-- [Cloudflare REST API setup](https://developers.cloudflare.com/workers-ai/get-started/rest-api/)
+- [Cloudflare Workers AI REST API](https://developers.cloudflare.com/workers-ai/get-started/rest-api/)
 - [Supabase Edge Function pricing](https://supabase.com/docs/guides/functions/pricing)
-- Scripture source links are included with each passage in `index.ts` and returned to the widget.
+- Scripture links are included with each passage in `index.ts`.
 
