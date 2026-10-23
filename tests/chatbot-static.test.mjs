@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const fn = await readFile(new URL('../supabase/functions/raman-chat/index.ts', import.meta.url), 'utf8');
+const knowledge = await readFile(new URL('../supabase/functions/raman-chat/organization-knowledge.ts', import.meta.url), 'utf8');
 const ui = await readFile(new URL('../chatbot.js', import.meta.url), 'utf8');
 
 test('curated scripture collection has 19 linked references across requested works', () => {
@@ -24,7 +25,18 @@ test('backend locks CORS, method, input size and language', () => {
   assert.match(fn, /rateLimited\(clientKey\)/);
   assert.match(fn, /kind:"conversation"/);
   assert.match(fn, /casualReply\(q,lang/);
+  assert.match(fn, /selectWebsite\(q\)/);
+  assert.match(fn, /Śrīmad-Bhāgavatam 1\.2\.6/);
+  assert.match(fn, /mahamantra/);
   assert.match(fn, /query\.has\("name"\)/);
+});
+
+test('organisation FAQ is maintained separately and does not invent an events calendar', () => {
+  assert.match(fn, /organization-knowledge\.ts/);
+  assert.match(knowledge, /id:"join"/);
+  assert.match(knowledge, /id:"kirtan"/);
+  assert.match(knowledge, /id:"events"/);
+  assert.match(knowledge, /do not publish a dated general events calendar/i);
 });
 
 test('frontend has no provider or service-role secret and inserts responses as text', () => {
@@ -43,6 +55,8 @@ test('frontend renders citations only as safe links and distinguishes AI interpr
   assert.match(ui, /SpeechSynthesisUtterance/);
   assert.match(ui, /aria-label="Pause or resume speech"/);
   assert.match(ui, /aria-label="Stop speech"/);
+  assert.match(ui, /aria-label="Toggle read aloud"/);
+  assert.match(ui, /let speakEnabled=false/);
 });
 
 test('mobile widget uses compact launcher and viewport-bounded chat panel', () => {
