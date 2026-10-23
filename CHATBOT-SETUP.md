@@ -23,7 +23,7 @@ Supabase is currently on its Free plan. Cloudflare Workers AI Free currently inc
 
 1. Deploy `supabase/functions/raman-chat/index.ts` to project `akfnlsyvjlxkdibfhuzy` with JWT verification enabled.
 2. Set the two Cloudflare secrets above if AI explanations are desired.
-3. Publish `chatbot.js` and include `<script src="chatbot.js?v=1" defer></script>` on each HTML page.
+3. Publish `chatbot.js` and include `<script src="chatbot.js?v=2" defer></script>` on each HTML page.
 4. Verify an OPTIONS preflight from `https://ramanparikar.github.io`, a website FAQ, a scripture question, and a rejected foreign origin. Do not submit the production Yatra form as a smoke test; it creates a real registration.
 
 ## Verified primary references
