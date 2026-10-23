@@ -21,6 +21,7 @@ test('backend locks CORS, method, input size and language', () => {
   assert.match(fn, /message\.length>1000/);
   assert.match(fn, /\['en','hi'\]/);
   assert.match(fn, /rateLimited\(clientKey\)/);
+  assert.match(fn, /query\.has\("name"\)/);
 });
 
 test('frontend has no provider or service-role secret and inserts responses as text', () => {
@@ -35,5 +36,11 @@ test('frontend renders citations only as safe links and distinguishes AI interpr
   assert.match(ui, /Verified scripture excerpts/);
   assert.match(ui, /vedabase\\\.io\|ramanparikar/);
   assert.match(ui, /No chat history is saved/);
+});
+
+test('mobile widget uses compact launcher and viewport-bounded chat panel', () => {
+  assert.match(ui, /@media\(max-width:480px\)/);
+  assert.match(ui, /width:56px;height:56px/);
+  assert.match(ui, /height:min\(680px,calc\(100dvh - 88px\)\)/);
 });
 

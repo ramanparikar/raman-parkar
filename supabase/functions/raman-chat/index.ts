@@ -43,7 +43,7 @@ const factsHi: Record<string,string> = {
 };
 
 function tokens(s: string) { return new Set((s.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) || []).filter(x => x.length > 1)); }
-function rank(q: string, item: {tags:string;title?:string;text?:string;ref?:string}) { const query=tokens(q), fields=tokens(`${item.tags} ${item.title||""} ${item.ref||""}`); let score=0; for(const t of query) if(fields.has(t)) score+=1; return score; }
+function rank(q: string, item: {tags:string;title?:string;text?:string;ref?:string}) { const query=tokens(q), fields=tokens(`${item.tags} ${item.title||""} ${item.ref||""}`); if(query.has("name")&&!/(holy|hare|hari|chant|mantra)/i.test(q)) query.delete("name"); let score=0; for(const t of query) if(fields.has(t)) score+=1; return score; }
 function select<T extends {tags:string}>(q: string, list:T[], count:number):T[] { return list.map(x=>({x,s:rank(q,x)})).filter(a=>a.s>0).sort((a,b)=>b.s-a.s).slice(0,count).map(a=>a.x); }
 
 // Per-isolate abuse control only (best-effort); no request content, IP, or conversation is persisted/logged.
@@ -63,7 +63,7 @@ Deno.serve(async req => {
   const {message,language}=body as Record<string,unknown>;
   if(Object.keys(body).some(k=>!['message','language'].includes(k))||typeof message!=="string"||message.trim().length<2||message.length>1000||!['en','hi'].includes(String(language))) return reply({error:"invalid_request"},400);
   const q=message.trim(), lang=language as "en"|"hi";
-  const asksWebsite=/\b(raman|parikar|group|community|join|volunteer|seva|kirtan|course|classes|yatra|event|satsang|sanga|contact|whatsapp|email|address|location|registration|register|upcoming)\b/i.test(q)||/[सत्संगसेवायात्रासंपर्कपता]/u.test(q);
+  const asksWebsite=/\b(raman|parikar|join|membership|volunteer|course|classes|yatra|event|contact|whatsapp|email|address|location|registration|register|upcoming)\b|\b(home kirtan|kirtan seva|saturday|sunday)\b/i.test(q)||/(यात्रा|संपर्क|पंजीकरण|कार्यक्रम|पाठ्यक्रम|सदस्यता|स्वयंसेवक|घर पर कीर्तन|शनिवार|रविवार|व्हाट्सएप|ईमेल)/u.test(q);
   const org=asksWebsite?select(q,facts,2):[];
   if(org.length) return reply({kind:"website",language:lang,answer:org.map(x=>lang==="hi"?factsHi[x.id]:x.text).join("\n\n"),sources:org.map(x=>({title:x.title,url:new URL(x.url,ORIGIN+"/raman-parkar/").href}))});
   const hits=select(q,passages,3);
