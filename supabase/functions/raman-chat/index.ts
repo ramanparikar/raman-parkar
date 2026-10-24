@@ -41,7 +41,7 @@ function parseExactReference(q: string) {
   const group=/gita|^bg$/.test(name)?"gita":/bhagavat|^sb$/.test(name)?"bhagavatam":/charitamrita|^cc$/.test(name)?"cc":/brahma|^bs$/.test(name)?"brahma":"noi";
   return {group,ref};
 }
-function tokens(s: string) { return new Set((normalizeSearch(s).match(/[\p{L}\p{N}]+/gu)||[]).filter(x=>x.length>1)); }
+function tokens(s: string) { const stop=new Set(["a","an","and","are","about","can","do","does","find","for","give","how","i","is","it","me","my","of","please","the","to","who","what"]); return new Set((normalizeSearch(s).match(/[\p{L}\p{N}]+/gu)||[]).filter(x=>x.length>1&&!stop.has(x))); }
 function rank(q: string, item: {tags:string;title?:string;text?:string;ref?:string;original?:string;translit?:string;hi?:string;en?:string}) {
  const query=tokens(q), fields=tokens(`${item.tags} ${item.title||""} ${item.ref||""} ${item.original||""} ${item.translit||""} ${item.hi||""} ${item.en||""}`);
  if(query.has("name")&&!/(holy|hare|hari|chant|mantra)/i.test(q))query.delete("name");
