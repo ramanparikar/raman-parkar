@@ -38,9 +38,13 @@
     if(data.kind==="conversation"){node("div","",data.answer,box);}
     if(data.kind==="website"){node("h4","","Raman Parikar",box);node("div","",data.answer,box);node("h4","","Website sources",box);for(const s of data.sources||[]){linkLine(box,s.title,s.url);node("br","",undefined,box);}}
     if(data.kind==="scripture"){
-      node("h4","",data.ai_available?"Tabhai's explanation — interpretation":"Source-grounded note",box);node("div","",data.interpretation,box);node("div","notice",data.ai_available?"AI explanation based only on the verified excerpts below; this is interpretation, not scripture.":"The AI explanation service needs administrator setup. The verified excerpts and curated meanings below remain available.",box);
-      node("h4","","Verified scripture excerpts",box);
-      for(const p of data.passages||[]){const item=node("div","passage",undefined,box);node("strong","",p.reference,item);node("div","verse",p.original,item);node("div","small",p.transliteration,item);node("div","small",`हिन्दी भावार्थ: ${p.meaning_hi}`,item);node("div","small",`English meaning: ${p.meaning_en}`,item);linkLine(item,"Source text at Vedabase",p.url);}
+      const passages=data.passages||[];
+      const showPassages=()=>{node("h4","","Verified scripture excerpts",box);for(const p of passages){const item=node("div","passage",undefined,box);node("strong","",p.reference,item);node("div","verse",p.original,item);node("div","small",p.transliteration,item);node("div","small",`हिन्दी भावार्थ: ${p.meaning_hi}`,item);node("div","small",`English meaning: ${p.meaning_en}`,item);linkLine(item,"Source text at Vedabase",p.url);}};
+      if(data.exact_reference)showPassages();
+      node("h4","",data.ai_available?"Tabhai's explanation — interpretation":"Curated explanation",box);
+      node("div","",data.interpretation,box);
+      node("div","notice",data.ai_available?"This is an AI interpretation based only on the verified excerpts; it is not scripture.":"These are verified source excerpts with curated meanings. An AI-generated explanation is currently unavailable.",box);
+      if(!data.exact_reference)showPassages();
       node("div","notice","Selected-source collection only; no complete book or unpublished group material is included.",box);
     }
     if(data.kind==="uncertain"){node("div","",data.answer,box);}

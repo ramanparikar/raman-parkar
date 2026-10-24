@@ -27,11 +27,30 @@ const passages = [
   { ref:"Nectar of Instruction 2", url:"https://vedabase.io/en/library/noi/2/", original:"अत्याहारः प्रयासश्च प्रजल्पो नियमाग्रहः ।\nजनसङ्गश्च लौल्यं च षड्भिर्भक्तिर्विनश्यति ॥", translit:"atyāhāraḥ prayāsaś ca prajalpo niyamāgrahaḥ\njana-saṅgaś ca laulyaṁ ca ṣaḍbhir bhaktir vinaśyati", hi:"अत्यधिक संग्रह/भोजन, अनावश्यक प्रयास, व्यर्थ चर्चा, नियमों का अनुचित आग्रह, अवांछित संग और चंचलता भक्ति में बाधक हैं।", en:"Overeating or over-collecting, excessive effort, idle talk, rigid or neglectful rule-following, unsuitable association, and greed obstruct bhakti.", tags:"obstacles practice habits bhakti बाधा अभ्यास" },
   { ref:"Nectar of Instruction 3", url:"https://vedabase.io/en/library/noi/3/", original:"उत्साहान्निश्चयाद्धैर्यात्तत्तत्कर्मप्रवर्तनात् ।\nसङ्गत्यागात्सतो वृत्तेः षड्भिर्भक्तिः प्रसिध्यति ॥", translit:"utsāhān niścayād dhairyāt tat-tat-karma-pravartanāt\nsaṅga-tyāgāt sato vṛtteḥ ṣaḍbhir bhaktiḥ prasidhyati", hi:"उत्साह, दृढ़ निश्चय, धैर्य, भक्ति-अनुकूल कर्म, अनुचित संग का त्याग और साधु आचरण से भक्ति आगे बढ़ती है।", en:"Bhakti progresses through enthusiasm, confidence, patience, appropriate practice, giving up unsuitable association, and following saintly conduct.", tags:"practice progress patience confidence उत्साह धैर्य साधना" },
   { ref:"Nectar of Instruction 4", url:"https://vedabase.io/en/library/noi/4/", original:"ददाति प्रतिगृह्णाति गुह्यमाख्याति पृच्छति ।\nभुङ्क्ते भोजयते चैव षड्विधं प्रीतिलक्षणम् ॥", translit:"dadāti pratigṛhṇāti\nguhyam ākhyāti pṛcchati\nbhuṅkte bhojayate caiva\nṣaḍ-vidhaṁ prīti-lakṣaṇam", hi:"भक्तों के बीच प्रेम के छह आदान-प्रदान हैं: देना और स्वीकारना, विश्वासपूर्वक मन की बात कहना और पूछना, तथा प्रसाद ग्रहण करना और कराना।", en:"Rupa Goswami describes six loving exchanges among devotees: giving and receiving, confidentially sharing and asking, and accepting and offering prasada.", tags:"association friendship devotee community prasada exchange sanga संग प्रसाद भक्त मैत्री" }
+,
+  { ref:"Bhagavad-gītā 6.26", url:"https://vedabase.io/en/library/bg/6/26/", original:"यतो यतो निश्चलति मनश्चञ्चलमस्थिरम् ।\nततस्ततो नियम्यैतदात्मन्येव वशं नयेत् ॥", translit:"yato yato niścalati manaś cañcalam asthiram\ntatas tato niyamyaitad ātmany eva vaśaṁ nayet", hi:"मन चंचल होकर जहाँ-जहाँ भटके, उसे वहाँ से धीरे-धीरे वापस लाकर आत्मा में स्थिर करना चाहिए।", en:"Whenever the restless mind wanders, gently bring it back and steady it within the self.", tags:"mind man mann chitta focus meditation wandering attention restless मन चंचल ध्यान एकाग्रता" },
+  { ref:"Bhagavad-gītā 6.35", url:"https://vedabase.io/en/library/bg/6/35/", original:"श्रीभगवानुवाच ।\nअसंशयं महाबाहो मनो दुर्निग्रहं चलम् ।\nअभ्यासेन तु कौन्तेय वैराग्येण च गृह्यते ॥", translit:"śrī-bhagavān uvāca\nasaṁśayaṁ mahā-bāho mano durnigrahaṁ calam\nabhyāsena tu kaunteya vairāgyeṇa ca gṛhyate", hi:"श्रीभगवान कहते हैं: मन को वश करना कठिन और चंचल है, पर अभ्यास और वैराग्य से इसे साधा जा सकता है।", en:"The mind is restless and difficult to master, yet it can be trained through practice and detachment.", tags:"mind man mann chitta practice abhyasa vairagya control restless discipline मन अभ्यास वैराग्य चंचल" },
 ];
 
-function tokens(s: string) { return new Set((s.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) || []).filter(x => x.length > 1)); }
-function rank(q: string, item: {tags:string;title?:string;text?:string;ref?:string}) { const query=tokens(q), fields=tokens(`${item.tags} ${item.title||""} ${item.ref||""}`); if(query.has("name")&&!/(holy|hare|hari|chant|mantra)/i.test(q)) query.delete("name"); let score=0; for(const t of query) if(fields.has(t)) score+=1; if(/\bwhat (?:is|does) bhakti\b|bhakti kya hai|भक्ति क्या/iu.test(q)&&item.ref==="Śrīmad-Bhāgavatam 1.2.6") score+=6; return score; }
-function select<T extends {tags:string}>(q: string, list:T[], count:number):T[] { return list.map(x=>({x,s:rank(q,x)})).filter(a=>a.s>0).sort((a,b)=>b.s-a.s).slice(0,count).map(a=>a.x); }
+function normalizeSearch(s: string) { return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[’'\x60]/g,"").replace(/[^\p{L}\p{N}.: -]/gu," ").replace(/\s+/g," ").trim(); }
+function parseExactReference(q: string) {
+  const n=normalizeSearch(q).replace(/:/g,".");
+  const m=n.match(/(bhagavad\s*gita|bhagavadgita|gita|bg|srimad\s*bhagavatam|bhagavatam|bhagavata(?:m)?|sb|chaitanya\s*charitamrita|cc|brahma\s*samhita|bs|nectar\s*of\s*instruction|noi)\s+(\d+(?:\.\d+){1,2})/);
+  if(!m)return null;
+  const name=m[1], ref=m[2];
+  const group=/gita|^bg$/.test(name)?"gita":/bhagavat|^sb$/.test(name)?"bhagavatam":/charitamrita|^cc$/.test(name)?"cc":/brahma|^bs$/.test(name)?"brahma":"noi";
+  return {group,ref};
+}
+function tokens(s: string) { return new Set((normalizeSearch(s).match(/[\p{L}\p{N}]+/gu)||[]).filter(x=>x.length>1)); }
+function rank(q: string, item: {tags:string;title?:string;text?:string;ref?:string;original?:string;translit?:string;hi?:string;en?:string}) {
+ const query=tokens(q), fields=tokens(`${item.tags} ${item.title||""} ${item.ref||""} ${item.original||""} ${item.translit||""} ${item.hi||""} ${item.en||""}`);
+ if(query.has("name")&&!/(holy|hare|hari|chant|mantra)/i.test(q))query.delete("name");
+ const aliases:Record<string,string[]>={mind:["man","mann","mana","chitta","मन","मन्न","चित्त"],man:["mind","mann","mana","chitta"],mann:["mind","man","mana","chitta"],chanting:["japa","naam","नाम"],shloka:["verse","श्लोक"],verse:["shloka","श्लोक"]};
+ let score=0;for(const t of query){if(fields.has(t))score+=2;for(const alias of aliases[t]||[])if(fields.has(normalizeSearch(alias)))score+=1;}
+ if(/\bwhat (?:is|does) bhakti\b|bhakti kya hai|भक्ति क्या/iu.test(q)&&item.ref==="Śrīmad-Bhāgavatam 1.2.6")score+=6;
+ return score;
+}
+function select<T extends {tags:string}>(q: string,list:T[],count:number):T[]{return list.map(x=>({x,s:rank(q,x)})).filter(a=>a.s>0).sort((a,b)=>b.s-a.s).slice(0,count).map(a=>a.x);}
 function selectWebsite(q:string){
   const targeted:[RegExp,string][]=[[/\b(yatra|govardhan|registration|register|fee|payment)\b|यात्रा|गोवर्धन|पंजीकरण|शुल्क|भुगतान/u,"yatra"],[/\b(upcoming|events?|calendar|date)\b|आगामी|कार्यक्रम/u,"events"],[/\b(join|membership|member|volunteer|volunteering|beginner|beginners|newcomer|newcomers)\b|जुड़|सदस्यता|स्वयंसेवक|शुरुआत/u,"join"],[/\b(kirtan|home kirtan)\b|कीर्तन/u,"kirtan"],[/\b(course|class|study|shloka)\b|पाठ्यक्रम|कक्षा|अध्ययन|श्लोक/u,"courses"],[/\b(contact|phone|whatsapp|email|address|location)\b|संपर्क|फोन|व्हाट्सएप|ईमेल|पता/u,"contact"],[/\b(who is raman|what is raman|about raman)\b|रमन परिवार क्या/u,"about"]];
   const intent=targeted.find(([pattern])=>pattern.test(q))?.[1];
@@ -67,12 +86,20 @@ Deno.serve(async req => {
   const {message,language}=body as Record<string,unknown>;
   if(Object.keys(body).some(k=>!['message','language'].includes(k))||typeof message!=="string"||message.trim().length<2||message.length>1000||!['auto','en','hi'].includes(String(language))) return reply({error:"invalid_request"},400);
   const q=message.trim();
-  const hindiHints=/\b(kya|kaise|kaun|kyun|hai|hain|kripya|bataye|batao|mujhe|aap|prabhuji|bhai|yaar|bhakti|seva|darshan|satsang|yatra|jude|judna|samjhao|samjha|kar rahe|kya scene|shukriya|dhanyavaad|namaste|bor|pak gaya)\b/i;
+  const hindiHints=/\b(kya|kaise|kaun|kyun|hai|hain|aaj|bahut|mann|mujh|mujhse|mera|meri|raha|rahi|nahi|prabhu|kripya|bataye|batao|mujhe|aap|prabhuji|bhai|yaar|bhakti|seva|darshan|satsang|yatra|jude|judna|samjhao|samjha|kar rahe|kya scene|shukriya|dhanyavaad|namaste|bor|pak gaya)\b/i;
   const lang=(language==="auto"?(/[\u0900-\u097f]/u.test(q)||hindiHints.test(q)?"hi":"en"):language) as "en"|"hi";
   const greeting=/^(hi+|hello+|hey+(?:\s+tabhai)?|hare krishna|radhe radhe|jai shri krishna|namaste|नमस्ते|हरे कृष्ण|राधे राधे)[!\s🙏🦚😂।]*$/iu;
   const thanks=/^(thanks?|thank you|धन्यवाद|शुक्रिया|बहुत धन्यवाद)[!\s🙏🙂।]*$/iu;
   const romanHi=lang==="hi"&&!/[\u0900-\u097f]/u.test(q);
   const casual=(hinglish:string,hindi:string,english:string)=>romanHi?hinglish:lang==="hi"?hindi:english;
+  const emotional=/\b(low feel|feeling low|feel low|lonely|struggling with my spiritual|not a good devotee|good bhakt|cant chant|can't chant|mann nahi lag|man nahi lag|chanting mein mann|mind keeps wandering|seva nahi ho pa|unable to do seva|overwhelmed|very sad|depressed|hopeless)\b|\b(aaj bahut low|mujhse seva nahi|mera mann baar baar bhatak|main achha bhakt)\b|मन नहीं लग|मन भटक|सेवा नहीं हो पा|अकेला|बहुत उदास|निराश/u.test(q);
+  if(emotional){
+    const crisis=/\b(suicid|kill myself|end my life|self[- ]harm|hurt myself|want to die)\b|आत्महत्या|खुद को नुकसान/u.test(q);
+    const answer=crisis
+      ? casual("Arey bhai, ye bahut bhaari lag raha hai—abhi isse akele mat sambhalo. Kisi bharosemand apne ko abhi call ya paas bulao; agar turant khatra hai toh apne local emergency service ya nearest hospital se abhi help lo. Kya tum iss waqt safe jagah par ho?","अरे, यह बहुत भारी लग रहा है—अभी इसे अकेले मत संभालिए। किसी भरोसेमंद अपने को अभी बुलाइए या फ़ोन कीजिए; अगर तुरंत खतरा है तो स्थानीय आपातकालीन सेवा या नज़दीकी अस्पताल से मदद लीजिए। क्या आप अभी सुरक्षित जगह पर हैं?","I’m really sorry this feels so heavy. Please don’t handle it alone—call someone you trust and ask them to stay with you. If you’re in immediate danger, contact your local emergency service or go to the nearest hospital now. Are you somewhere safe right now?")
+      : casual("Arey bhai ❤️ samajh raha hoon. Har din mann aur energy ek jaise nahi hote—isse apni bhakti ka judgement mat banao. Aaj bas 5 minute shaanti se naam-jap try karo; mann bhatke toh pyaar se wapas le aana. Bata, zyada thakaan hai ya thoughts bahut aa rahe hain?","अरे भाई ❤️ समझ रहा हूँ। हर दिन मन और ऊर्जा एक जैसी नहीं होती—इसे अपनी भक्ति का फैसला मत मानो। आज बस 5 मिनट शांति से नाम-जप करके देखो; मन भटके तो प्यार से वापस ले आना। बताओ, ज़्यादा थकान है या विचार बहुत आ रहे हैं?","I’m sorry it’s a hard day ❤️. A difficult stretch doesn’t define your sincerity. If it feels manageable, try just five quiet minutes of chanting or take a small rest, without pressuring yourself. Is this mostly tiredness, racing thoughts, or something else?");
+    return reply({kind:"conversation",language:lang,answer,ai_available:false});
+  }
   if(greeting.test(q)) { const greetingText=/^hey+\s+tabhai\b/i.test(q)?"Areyyy 😂 Hare Krishna! Kya haal-chaal? Aaj kya charcha karein?":casual("Areyyy 😂 Hare Krishna! Kya haal-chaal? Aaj kya charcha karein?","अरेय 😂 हरे कृष्ण! क्या हाल-चाल? आज क्या चर्चा करें?","Hey! 😂 Hare Krishna! How’s it going? What are we chatting about today?"); return await casualReply(q,lang,greetingText); }
   if(thanks.test(q)) return await casualReply(q,lang,casual("Arre, anytime yaar 😄 Aur batao?","अरे, कभी भी 😄 और बताओ?","Anytime 😄 What else is up?"));
   if(/\bhow are you\b|कैसे हैं|कैसे हो|kaise ho|kaise hain/i.test(q)) return await casualReply(q,lang,casual("Bas bhai, Krishna ki kripa se badhiya 😎 Tum sunao, kya chal raha hai?","बस भाई, कृष्ण-कृपा से बढ़िया 😎 तुम सुनाओ, क्या चल रहा है?","Doing good, by Krishna’s kindness 😎 What’s going on with you?"));
@@ -82,7 +109,14 @@ Deno.serve(async req => {
   const asksWebsite=/\b(raman|parikar|join|membership|volunteer|course|classes|yatra|event|contact|whatsapp|email|address|location|registration|register|upcoming|beginner|beginners|newcomer|newcomers)\b|\b(home kirtan|kirtan seva|saturday|sunday)\b|\b(seva|satsang|study group)\b/i.test(q)||/(यात्रा|संपर्क|पंजीकरण|कार्यक्रम|पाठ्यक्रम|सदस्यता|स्वयंसेवक|घर पर कीर्तन|शनिवार|रविवार|व्हाट्सएप|ईमेल|सेवा|सत्संग|शुरुआत|शुरू|जुड़)/u.test(q);
   const org=asksWebsite?selectWebsite(q):[];
   if(org.length) return reply({kind:"website",language:lang,answer:org.map(x=>lang==="hi"?x.hi:x.en).join("\n\n"),sources:org.map(x=>({title:x.title,url:new URL(x.url,ORIGIN+"/raman-parkar/").href}))});
-  const hits=select(q,passages,3);
+  const requestedRef=parseExactReference(q);
+  let hits:typeof passages;
+  if(requestedRef){
+    const prefix=requestedRef.group==="gita"?"bhagavad-gita":requestedRef.group==="bhagavatam"?"śrīmad-bhāgavatam":requestedRef.group==="cc"?"śrī caitanya-caritāmṛta":requestedRef.group==="brahma"?"brahma-saṁhitā":"nectar of instruction";
+    hits=passages.filter(p=>normalizeSearch(p.ref).replace(/[-:]/g," ").includes(normalizeSearch(prefix).replace(/-/g," ").replace(/:/g," ")) && normalizeSearch(p.ref).match(/[0-9]+(?:\.[0-9]+){1,2}/)?.[0]===requestedRef.ref);
+    if(!hits.length)return reply({kind:"uncertain",language:lang,answer:casual("Achha, woh exact passage abhi meri searchable collection mein add nahi hai. Main koi doosra shloka uski jagah nahi dunga. Agar chaho toh topic ke related available passages dhoondh doon.","अच्छा, वह exact passage अभी मेरी searchable collection में नहीं है। उसकी जगह कोई दूसरा श्लोक नहीं दूँगा। चाहें तो इसी विषय के उपलब्ध अंश ढूँढ़ दूँ।","I don’t have that exact passage in the searchable collection yet, so I won’t substitute another verse. I can look for related passages if you’d like."),sources:[],collection_size:passages.length});
+  } else hits=select(q,passages,4);
+
   if(!hits.length) return reply({kind:"uncertain",language:lang,answer:lang==="hi"?"इस विषय के लिए मेरे पास अभी सत्यापित संदर्भ नहीं हैं। कृपया Raman Parikar टीम से पूछें या प्रश्न को किसी प्रकाशित शास्त्रीय संदर्भ के साथ फिर पूछें।":"I do not have a verified source for this topic in the material currently added. Please ask the Raman Parikar team or try again with a scripture/topic from the current collection.",sources:[],collection_size:passages.length});
   const excerpts=hits.map((p,i)=>`[${i+1}] ${p.ref}\nSanskrit: ${p.original}\nTransliteration: ${p.translit}\nEnglish meaning (curated paraphrase): ${p.en}\nHindi meaning (curated paraphrase): ${p.hi}`).join("\n\n");
   const account=Deno.env.get("CLOUDFLARE_ACCOUNT_ID"), token=Deno.env.get("CLOUDFLARE_API_TOKEN");
@@ -94,5 +128,5 @@ Deno.serve(async req => {
     } catch { /* Fail closed: curated text remains available. */ }
   }
   if(!interpretation) interpretation=lang==="hi"?(/[\u0900-\u097f]/u.test(q)?"अच्छा, चलिए इसे दिए गए सत्यापित अंशों के आधार पर समझते हैं। AI व्याख्या सेवा अभी उपलब्ध नहीं है; नीचे श्लोक और संपादित भावार्थ दिए हैं।":"Achha, chalo diye gaye verified passages se samajhte hain. AI explanation abhi available nahi hai; neeche shlok aur curated meanings hain."):"Let’s look at this carefully using the verified passages below. The AI interpretation service is unavailable right now, so the meanings shown are curated paraphrases.";
-  return reply({kind:"scripture",language:lang,interpretation,ai_available:aiAvailable,collection_size:passages.length,passages:hits.map(p=>({reference:p.ref,url:p.url,original:p.original,transliteration:p.translit,meaning_en:p.en,meaning_hi:p.hi})),notice:lang==="hi"?"संग्रह में केवल चयनित सत्यापित अंश हैं, पूर्ण ग्रंथ नहीं। अर्थ संपादित भावार्थ हैं; व्याख्या को शास्त्र-वचन न समझें।":"This collection contains selected verified excerpts, not complete books. Meanings are curated paraphrases; interpretation is not scripture."});
+  return reply({kind:"scripture",language:lang,interpretation,ai_available:aiAvailable,exact_reference:!!requestedRef,collection_size:passages.length,passages:hits.map(p=>({reference:p.ref,url:p.url,original:p.original,transliteration:p.translit,meaning_en:p.en,meaning_hi:p.hi})),notice:lang==="hi"?"संग्रह में केवल चयनित सत्यापित अंश हैं, पूर्ण ग्रंथ नहीं। अर्थ संपादित भावार्थ हैं; व्याख्या को शास्त्र-वचन न समझें।":"This collection contains selected verified excerpts, not complete books. Meanings are curated paraphrases; interpretation is not scripture."});
 });
