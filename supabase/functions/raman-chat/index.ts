@@ -88,7 +88,7 @@ Deno.serve(async req => {
   const q=message.trim();
   const hindiHints=/\b(kya|kaise|kaun|kyun|hai|hain|aaj|bahut|mann|mujh|mujhse|mera|meri|raha|rahi|nahi|prabhu|kripya|bataye|batao|mujhe|aap|prabhuji|bhai|yaar|bhakti|seva|darshan|satsang|yatra|jude|judna|samjhao|samjha|kar rahe|kya scene|shukriya|dhanyavaad|namaste|bor|pak gaya)\b/i;
   const lang=(language==="auto"?(/[\u0900-\u097f]/u.test(q)||hindiHints.test(q)?"hi":"en"):language) as "en"|"hi";
-  const greeting=/^(hi+|hello+|hey+(?:\s+tabhai)?|hare krishna|radhe radhe|jai shri krishna|namaste|नमस्ते|हरे कृष्ण|राधे राधे)[!\s🙏🦚😂।]*$/iu;
+  const greeting=/^(hi+(?:\s+tabhai)?|hello+|hey+(?:\s+tabhai)?|hare krishna|radhe radhe|jai shri krishna|namaste|नमस्ते|हरे कृष्ण|राधे राधे)[!\s🙏🦚😂।]*$/iu;
   const thanks=/^(thanks?|thank you|धन्यवाद|शुक्रिया|बहुत धन्यवाद)[!\s🙏🙂।]*$/iu;
   const romanHi=lang==="hi"&&!/[\u0900-\u097f]/u.test(q);
   const casual=(hinglish:string,hindi:string,english:string)=>romanHi?hinglish:lang==="hi"?hindi:english;
@@ -100,7 +100,7 @@ Deno.serve(async req => {
       : casual("Arey bhai ❤️ samajh raha hoon. Har din mann aur energy ek jaise nahi hote—isse apni bhakti ka judgement mat banao. Aaj bas 5 minute shaanti se naam-jap try karo; mann bhatke toh pyaar se wapas le aana. Bata, zyada thakaan hai ya thoughts bahut aa rahe hain?","अरे भाई ❤️ समझ रहा हूँ। हर दिन मन और ऊर्जा एक जैसी नहीं होती—इसे अपनी भक्ति का फैसला मत मानो। आज बस 5 मिनट शांति से नाम-जप करके देखो; मन भटके तो प्यार से वापस ले आना। बताओ, ज़्यादा थकान है या विचार बहुत आ रहे हैं?","I’m sorry it’s a hard day ❤️. A difficult stretch doesn’t define your sincerity. If it feels manageable, try just five quiet minutes of chanting or take a small rest, without pressuring yourself. Is this mostly tiredness, racing thoughts, or something else?");
     return reply({kind:"conversation",language:lang,answer,ai_available:false});
   }
-  if(greeting.test(q)) { const greetingText=/^hey+\s+tabhai\b/i.test(q)?"Areyyy 😂 Hare Krishna! Kya haal-chaal? Aaj kya charcha karein?":casual("Areyyy 😂 Hare Krishna! Kya haal-chaal? Aaj kya charcha karein?","अरेय 😂 हरे कृष्ण! क्या हाल-चाल? आज क्या चर्चा करें?","Hey! 😂 Hare Krishna! How’s it going? What are we chatting about today?"); return await casualReply(q,lang,greetingText); }
+  if(greeting.test(q)) { const greetingText=/^(?:hey+|hi+)\s+tabhai\b/i.test(q)?"Areyyy 😂 Hare Krishna! Kya haal-chaal? Aaj kya charcha karein?":casual("Areyyy 😂 Hare Krishna! Kya haal-chaal? Aaj kya charcha karein?","अरेय 😂 हरे कृष्ण! क्या हाल-चाल? आज क्या चर्चा करें?","Hey! 😂 Hare Krishna! How’s it going? What are we chatting about today?"); return await casualReply(q,lang,greetingText); }
   if(thanks.test(q)) return await casualReply(q,lang,casual("Arre, anytime yaar 😄 Aur batao?","अरे, कभी भी 😄 और बताओ?","Anytime 😄 What else is up?"));
   if(/\bhow are you\b|कैसे हैं|कैसे हो|kaise ho|kaise hain/i.test(q)) return await casualReply(q,lang,casual("Bas bhai, Krishna ki kripa se badhiya 😎 Tum sunao, kya chal raha hai?","बस भाई, कृष्ण-कृपा से बढ़िया 😎 तुम सुनाओ, क्या चल रहा है?","Doing good, by Krishna’s kindness 😎 What’s going on with you?"));
   if(/\bwhat are you doing\b|\bkya kar rahe ho\b|\bkya kar rahi ho\b|\bkya chal raha hai\b|\bkya scene hai\b/i.test(q)) return await casualReply(q,lang,casual("Bas bhai, seva mein lage hain 😎 Tum sunao, kya chal raha hai?","बस भाई, सेवा में लगे हैं 😎 तुम सुनाओ, क्या चल रहा है?","Just keeping busy with seva 😎 What’s up with you?"));
