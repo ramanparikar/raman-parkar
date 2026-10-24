@@ -7,3 +7,23 @@
 body.yatra-page{position:relative;isolation:isolate;background:transparent}
 body.yatra-page::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(135deg,rgba(55,37,31,.34),rgba(255,248,235,.80)),url("group-gathering.jpg") center/cover no-repeat}
 .yatra-hero{background:linear-gradient(135deg,rgba(255,250,240,.86),rgba(247,234,211,.76))}
+/* Narrow-screen refinements for the registration page and QR payment details. */
+body.yatra-page{min-width:320px}
+.yatra-layout>*{min-width:0}
+.yatra-note,.yatra-form{overflow-wrap:anywhere}
+.upi-qr{max-width:min(100%,420px)}
+.thank-you-wrap{min-height:calc(100dvh - 118px)}
+@media(max-width:600px){
+ .yatra-hero{padding-top:42px;padding-bottom:40px}
+ .yatra-layout{gap:18px}
+ .yatra-facts{gap:8px}
+ .yatra-facts span{font-size:.92rem}
+ .online-payment-details{padding:15px}
+ .upi-qr{width:min(100%,360px)}
+ .thank-you-wrap{min-height:calc(100dvh - 108px);padding:28px 16px}
+}
+@media(max-width:360px){
+ .yatra-note h2{font-size:1.65rem}
+ .yatra-form fieldset{padding:12px}
+ .yatra-form .choice{margin-right:0}
+}
