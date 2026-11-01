@@ -94,6 +94,7 @@ create table scripture.units (
   updated_at timestamptz not null default now(),
   constraint unit_sequence_nonnegative check (sequence_no >= 0),
   unique (id, work_id),
+  unique (section_id, sequence_no),
   foreign key (section_id, work_id) references scripture.sections(id, work_id) on delete restrict
 );
 create index units_work_section_sequence_idx on scripture.units(work_id, section_id, sequence_no);
@@ -147,7 +148,7 @@ create table scripture.rights_holders (
 create table scripture.permission_grants (
   id uuid primary key default gen_random_uuid(),
   rights_holder_id uuid references scripture.rights_holders(id) on delete restrict,
-  edition_id uuid references scripture.editions(id) on delete restrict,
+  edition_id uuid not null references scripture.editions(id) on delete restrict,
   permission_title text not null,
   permission_reference text,
   evidence_source_id uuid references scripture.sources(id) on delete set null,
@@ -166,7 +167,9 @@ create table scripture.permission_grants (
   reviewed_by text,
   reviewed_at timestamptz,
   created_at timestamptz not null default now(),
-  constraint permission_dates_valid check (expires_on is null or starts_on is null or expires_on >= starts_on)
+  unique (id, edition_id),
+  constraint permission_dates_valid check (expires_on is null or starts_on is null or expires_on >= starts_on),
+  constraint permission_license_evidence check (rights_state <> 'licensed_for_use' or (rights_holder_id is not null and permission_reference is not null and evidence_source_id is not null and reviewed_by is not null and reviewed_at is not null))
 );
 
 create table scripture.import_batches (
@@ -195,7 +198,7 @@ create table scripture.unit_texts (
   text_content text not null,
   normalized_search_text text,
   source_id uuid references scripture.sources(id) on delete restrict,
-  permission_grant_id uuid references scripture.permission_grants(id) on delete restrict,
+  permission_grant_id uuid,
   import_batch_id uuid references scripture.import_batches(id) on delete set null,
   review_state scripture.review_state not null default 'imported',
   rights_state scripture.rights_state not null default 'unknown',
@@ -207,6 +210,7 @@ create table scripture.unit_texts (
   constraint text_content_not_blank check (length(btrim(text_content)) > 0),
   foreign key (unit_id, work_id) references scripture.units(id, work_id) on delete cascade,
   foreign key (edition_id, work_id) references scripture.editions(id, work_id) on delete restrict,
+  foreign key (permission_grant_id, edition_id) references scripture.permission_grants(id, edition_id) on delete restrict,
   constraint unit_text_publication_gate check (publication_state not in ('eligible_for_publication','published') or (review_state = 'verified' and rights_state in ('public_domain_confirmed','licensed_for_use'))),
   constraint unit_text_rights_evidence check ((rights_state <> 'public_domain_confirmed' or source_id is not null) and (rights_state <> 'licensed_for_use' or permission_grant_id is not null))
 );
@@ -232,6 +236,7 @@ create table scripture.translations (
   constraint translation_not_blank check (length(btrim(translation_text)) > 0),
   foreign key (unit_id, work_id) references scripture.units(id, work_id) on delete cascade,
   foreign key (edition_id, work_id) references scripture.editions(id, work_id) on delete restrict,
+  foreign key (permission_grant_id, edition_id) references scripture.permission_grants(id, edition_id) on delete restrict,
   constraint translation_publication_gate check (publication_state not in ('eligible_for_publication','published') or (review_state = 'verified' and rights_state in ('public_domain_confirmed','licensed_for_use'))),
   constraint translation_rights_evidence check ((rights_state <> 'public_domain_confirmed' or source_id is not null) and (rights_state <> 'licensed_for_use' or permission_grant_id is not null))
 );
@@ -259,6 +264,7 @@ create table scripture.word_meanings (
   unique (unit_id, edition_id, language_code, token_sequence),
   foreign key (unit_id, work_id) references scripture.units(id, work_id) on delete cascade,
   foreign key (edition_id, work_id) references scripture.editions(id, work_id) on delete restrict,
+  foreign key (permission_grant_id, edition_id) references scripture.permission_grants(id, edition_id) on delete restrict,
   constraint word_meaning_publication_gate check (publication_state not in ('eligible_for_publication','published') or (review_state = 'verified' and rights_state in ('public_domain_confirmed','licensed_for_use'))),
   constraint word_meaning_rights_evidence check ((rights_state <> 'public_domain_confirmed' or source_id is not null) and (rights_state <> 'licensed_for_use' or permission_grant_id is not null))
 );
@@ -283,6 +289,7 @@ create table scripture.commentaries (
   constraint commentary_not_blank check (length(btrim(commentary_text)) > 0),
   foreign key (unit_id, work_id) references scripture.units(id, work_id) on delete cascade,
   foreign key (edition_id, work_id) references scripture.editions(id, work_id) on delete restrict,
+  foreign key (permission_grant_id, edition_id) references scripture.permission_grants(id, edition_id) on delete restrict,
   constraint commentary_publication_gate check (publication_state not in ('eligible_for_publication','published') or (review_state = 'verified' and rights_state in ('public_domain_confirmed','licensed_for_use'))),
   constraint commentary_rights_evidence check ((rights_state <> 'public_domain_confirmed' or source_id is not null) and (rights_state <> 'licensed_for_use' or permission_grant_id is not null))
 );
