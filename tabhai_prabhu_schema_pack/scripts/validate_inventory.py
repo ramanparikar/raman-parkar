@@ -29,15 +29,15 @@ UNIT_KINDS = {
 def section_path_matches(work: str, match: re.Match[str], section_path: str) -> bool:
     path = section_path.lower().replace("_", "-")
     if work == "BG":
-        return bool(re.search(r"chapter[-\\s]*0*" + str(int(match.group(1))) + r"(?:\\D|$)", path))
+        return bool(re.search(r"chapter[-\s]*0*" + str(int(match.group(1))) + r"(?:\D|$)", path))
     if work == "SB":
         canto, chapter = int(match.group(1)), int(match.group(2))
         return bool(
-            re.search(r"canto[-\\s]*0*" + str(canto) + r"(?:\\D|$)", path)
-            and re.search(r"chapter[-\\s]*0*" + str(chapter) + r"(?:\\D|$)", path)
+            re.search(r"canto[-\s]*0*" + str(canto) + r"(?:\D|$)", path)
+            and re.search(r"chapter[-\s]*0*" + str(chapter) + r"(?:\D|$)", path)
         )
     lila, chapter = match.group(1).lower(), int(match.group(2))
-    return bool(lila in path and re.search(r"chapter[-\\s]*0*" + str(chapter) + r"(?:\\D|$)", path))
+    return bool(lila in path and re.search(r"chapter[-\s]*0*" + str(chapter) + r"(?:\D|$)", path))
 
 
 def validate(path: Path) -> list[str]:
