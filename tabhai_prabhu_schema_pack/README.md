@@ -190,3 +190,9 @@ The inventory validator and importer cross-check `section_path` against the cano
 reference for all three works: BG chapter, SB canto and chapter, and CC lila and
 chapter. This guards against attaching a verse to the wrong chapter while preserving
 edition-specific printed labels and page numbers in the locator record.
+
+The migration explicitly revokes `PUBLIC` schema usage, table/sequence privileges
+and function execution, and applies matching default-privilege revocations for future
+objects created by the migration owner. CI checks that the private schema and its
+functions are not executable/visible through default PUBLIC grants. A future backend
+role must receive only the narrowly scoped privileges it actually needs.
