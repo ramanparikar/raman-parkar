@@ -64,7 +64,7 @@ The provisional inventory contains 700 reference slots across 18 chapters. This 
 The metadata importer is `scripts/import_inventory.py`. It accepts a CSV matching
 `inventory_template.csv`, validates canonical reference formats and duplicates, and
 requires an already-registered work, named edition, and source record. It creates
-edition-specific chapter sections and expected-unit inventory records only.
+canonical chapter sections and units, then attaches edition-specific locators only.
 
 Install its optional database driver with `python -m pip install "psycopg[binary]"`.
 Set `DATABASE_URL` to a disposable/local PostgreSQL database. First run without
@@ -108,3 +108,16 @@ Use `EDITION_VERIFICATION_WORKSHEET.md` for every physical edition before regist
 it as the reference edition or importing its inventory. The separate 1972 Trust notice
 and BBTI permissions information are both recorded in the rights checklist; legal
 authority for licensing remains an open verification item.
+
+## Database integrity and rights enforcement
+
+- Canonical unit sequence numbers are unique within a canonical section.
+- A permission grant is tied to one exact edition; content from another edition cannot reference it.
+- `scripture.permission_grant_allows(grant_id, edition_id, action, language)` checks grant status, dates, permitted action, language and the corresponding action flag at request time.
+- The helper supports `public_display`, `search_indexing`, `embeddings`, `ai_retrieval` and `redistribution`. Unknown actions fail closed.
+- Public-domain determinations still require a source record and documented human/legal review. The helper does not make public-domain determinations.
+- A published flag is not a substitute for request-time permission checks: grants can expire or be amended. The application must call the helper before each protected use.
+
+The CI workflow runs `005_rights_integrity_test.sql` against disposable PostgreSQL. Its fixtures are synthetic and rolled back; they test edition-mismatch rejection, expired-grant rejection, denied AI retrieval, language scoping, and duplicate canonical sequence rejection.
+
+`BBT_RIGHTS_REQUEST_TEMPLATE.md` is a draft letter for seeking written permissions and verifying the licensor's authority. It is not sent automatically and is not legal advice.
