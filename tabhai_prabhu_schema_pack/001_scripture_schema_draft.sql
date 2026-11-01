@@ -184,7 +184,7 @@ returns boolean
 language sql
 stable
 set search_path = ''
-as $
+as $permission_check$
   select exists (
     select 1
     from scripture.permission_grants g
@@ -204,7 +204,7 @@ as $
         else false
       end
   );
-$;
+$permission_check$;
 
 create table scripture.import_batches (
   id uuid primary key default gen_random_uuid(),
