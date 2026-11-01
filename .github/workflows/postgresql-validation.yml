@@ -8,6 +8,7 @@ on:
       - "**.py"
       - "**.yml"
       - "**.sh"
+      - "**.csv"
 
 permissions:
   contents: read
@@ -52,3 +53,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/004_seed_work_catalog_draft.sql"
       - name: Run structural invariants
         run: psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/003_schema_invariants_test.sql"
+      - name: Validate Bhagavad-gita provisional inventory
+        run: |
+          python "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/bg_expected_unit_inventory_provisional.csv"
+          test "$(($(wc -l < "$PACK_DIR/bg_expected_unit_inventory_provisional.csv") - 1))" -eq 700
