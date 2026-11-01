@@ -23,6 +23,8 @@ Use one completed worksheet per physical edition. A web catalogue entry is a dis
 
 For multi-volume works, create one row per physical volume in `edition_volume_verification_template.csv`. Do not treat a set-level catalogue page as proof of each volume's title, printing, pagination, or canto/līlā coverage. Record volume boundaries from the actual table of contents and printed pages. Keep photographs/scans of copyright pages private unless permission expressly allows sharing.
 
+Run completed volume records through `scripts/validate_edition_volumes.py` before treating them as inspected metadata. The validator requires all four checks (title page, copyright page, table of contents and numbering), a physical-copy reference, independent checker and date. It does not decide whether the edition is legally usable or whether all text is correct.
+
 ## Textual structure and numbering
 - Does this copy preserve the original verse numbering?
 - Does it use alternate numbering, omissions, insertions, or editorial renumbering?
