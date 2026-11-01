@@ -81,9 +81,14 @@ def section_details(row: dict[str, Any]) -> tuple[str, str, int]:
 def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: bool) -> None:
     try:
         with conn.cursor() as cur:
-            cur.execute("select id from scripture.sources where id = %s", (source_id,))
-            if not cur.fetchone():
+            cur.execute("select title, edition_id from scripture.sources where id = %s", (source_id,))
+            source = cur.fetchone()
+            if not source:
                 raise ValueError(f"Source record {source_id} does not exist")
+            source_title, source_edition_id = source
+            for row in rows:
+                if row["inventory_source"] != source_title:
+                    raise ValueError("Inventory source label does not match registered source title")
             editions = {}
             works = {}
             sections = {}
@@ -105,6 +110,8 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
                     if not got:
                         raise ValueError(f"Edition {row['edition_code']} for {work_code} is not registered")
                     editions[edition_key] = got[0]
+                if source_edition_id is not None and source_edition_id != editions[edition_key]:
+                    raise ValueError("Source record is registered to a different edition")
                 section_code, section_title, section_seq = section_details(row)
                 section_key = (work_code, row["edition_code"], section_code)
                 if section_key not in sections:
