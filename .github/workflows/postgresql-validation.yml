@@ -66,10 +66,11 @@ jobs:
           node --check tabhai-prabhu-preview.js
           node --check tabhai-prabhu-reference-utils.js
           node --test tests/*.test.cjs
-          python -m py_compile "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/scripts/import_inventory.py" "$PACK_DIR/scripts/test_import_inventory.py" "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/scripts/validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_inventory.py" "$PACK_DIR/scripts/validate_pack.py" "$PACK_DIR/scripts/validate_rights_register.py" "$PACK_DIR/scripts/test_validate_rights_register.py" "$PACK_DIR/scripts/test_validate_edition_candidates.py"
+          python -m py_compile "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/scripts/import_inventory.py" "$PACK_DIR/scripts/test_import_inventory.py" "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/scripts/validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_inventory.py" "$PACK_DIR/scripts/validate_pack.py" "$PACK_DIR/scripts/validate_rights_register.py" "$PACK_DIR/scripts/test_validate_rights_register.py" "$PACK_DIR/scripts/test_validate_edition_candidates.py" "$PACK_DIR/scripts/validate_edition_volumes.py" "$PACK_DIR/scripts/test_validate_edition_volumes.py"
           python "$PACK_DIR/scripts/validate_pack.py"
           python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_rights_register.py"
           python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_edition_candidates.py"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_edition_volumes.py"
           python "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/bg_edition_candidates.csv" "$PACK_DIR/work_edition_candidates.csv"
           python -m unittest discover -s "$PACK_DIR/scripts" -p "test_import_inventory.py"
           python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_bg_baseline.py"
