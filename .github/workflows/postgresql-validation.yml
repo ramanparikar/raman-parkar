@@ -1,0 +1,54 @@
+name: Scripture database PostgreSQL validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "**.sql"
+      - "**.py"
+      - "**.yml"
+      - "**.sh"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-postgresql:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: scripture_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d scripture_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: scripture_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Locate schema pack
+        shell: bash
+        run: |
+          if [[ -d tabhai_prabhu_schema_pack ]]; then
+            echo "PACK_DIR=tabhai_prabhu_schema_pack" >> "$GITHUB_ENV"
+          else
+            echo "PACK_DIR=." >> "$GITHUB_ENV"
+          fi
+      - name: Apply schema, indexes and metadata seed
+        run: |
+          psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/001_scripture_schema_draft.sql"
+          psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/002_search_indexes_draft.sql"
+          psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/004_seed_work_catalog_draft.sql"
+      - name: Run structural invariants
+        run: psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/003_schema_invariants_test.sql"
