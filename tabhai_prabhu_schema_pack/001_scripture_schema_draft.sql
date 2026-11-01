@@ -172,6 +172,40 @@ create table scripture.permission_grants (
   constraint permission_license_evidence check (rights_state <> 'licensed_for_use' or (rights_holder_id is not null and permission_reference is not null and evidence_source_id is not null and reviewed_by is not null and reviewed_at is not null))
 );
 
+-- Central helper for request-time licence checks. Call this for each requested use;
+-- never rely on a publication_state value alone because a grant can expire or change.
+create or replace function scripture.permission_grant_allows(
+  p_permission_grant_id uuid,
+  p_edition_id uuid,
+  p_action text,
+  p_language text
+)
+returns boolean
+language sql
+stable
+set search_path = ''
+as $
+  select exists (
+    select 1
+    from scripture.permission_grants g
+    where g.id = p_permission_grant_id
+      and g.edition_id = p_edition_id
+      and g.rights_state = 'licensed_for_use'
+      and (g.starts_on is null or g.starts_on <= current_date)
+      and (g.expires_on is null or g.expires_on >= current_date)
+      and p_action = any(g.permitted_actions)
+      and p_language = any(g.permitted_languages)
+      and case p_action
+        when 'public_display' then g.public_display_allowed
+        when 'search_indexing' then g.search_indexing_allowed
+        when 'embeddings' then g.embeddings_allowed
+        when 'ai_retrieval' then g.ai_retrieval_allowed
+        when 'redistribution' then g.redistribution_allowed
+        else false
+      end
+  );
+$;
+
 create table scripture.import_batches (
   id uuid primary key default gen_random_uuid(),
   batch_name text not null,
