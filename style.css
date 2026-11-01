@@ -155,3 +155,40 @@ footer.site-footer{position:relative;overflow:hidden;background:radial-gradient(
 .guides-section.guides-motion-ready .guide-name:last-child{transition-delay:.86s}
 .guides-section.guides-is-visible .guides-heading,.guides-section.guides-is-visible .guides-card,.guides-section.guides-is-visible .guide-name{opacity:1;transform:translateY(0)}
 @media(max-width:600px){.guides-card{padding:9px;border-radius:19px}.guides-photo-frame{padding:4px;border-radius:14px}.guides-photo-frame img{border-radius:10px}.guides-caption{grid-template-columns:1fr;gap:9px;padding-top:12px}.guide-name{padding:10px 12px}}
+
+/* Shastra / Stutis library */
+.shastra-tabs{display:flex;justify-content:center;gap:10px;margin:0 auto 34px;flex-wrap:wrap}
+.shastra-tab{display:inline-flex;padding:9px 22px;border:1px solid rgba(100,44,42,.22);border-radius:999px;background:var(--ivory);color:var(--maroon);font-weight:700}
+.shastra-tab.active,.shastra-tab:hover{background:var(--maroon);color:#fff8ec}
+.stutis-section{background:linear-gradient(145deg,#fffaf0,#f3e7d4)}
+.stuti-feature{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:30px;align-items:center;padding:16px;border:1px solid rgba(185,145,75,.45);border-radius:24px;background:var(--ivory);box-shadow:var(--shadow);margin-bottom:28px}
+.stuti-feature-image{position:relative;overflow:hidden;border-radius:17px;border:1px solid rgba(185,145,75,.5);background:#ead9c1}
+.stuti-feature-image img{width:100%;height:360px;object-fit:cover}
+.image-credit{display:block;padding:6px 10px;background:#fffaf0;color:var(--muted);font-size:.72rem}
+.stuti-feature-copy{padding:14px 18px}
+.stuti-feature-copy h3{font-size:clamp(1.7rem,3vw,2.4rem);margin:15px 0 8px}
+.stuti-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:28px 0 42px}
+.stuti-card{overflow:hidden;background:var(--ivory);border:1px solid rgba(100,44,42,.12);border-radius:18px;box-shadow:var(--shadow)}
+.stuti-card img{width:100%;height:160px;object-fit:cover;background:#eadfcf}
+.stuti-card>div{padding:17px}
+.stuti-card h3{margin:0 0 8px;font-size:1.12rem}
+.stuti-card p{font-size:.9rem;color:var(--muted);margin:0 0 10px}
+.stuti-note{font-size:.76rem;color:#8a6a43;font-style:italic}
+.stuti-reading{scroll-margin-top:110px;margin-top:22px;padding:clamp(20px,4vw,42px)}
+.reading-heading{text-align:center;max-width:760px;margin:0 auto 24px}
+.reading-heading h2{margin:12px 0 8px}
+.reading-intro{color:var(--muted);margin-inline:auto}
+.reading-tools{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:20px 0 30px}
+.reading-tools span{padding:6px 12px;border-radius:999px;background:#f3e6d2;color:var(--maroon);font-size:.8rem;font-weight:700}
+.verse-block{padding:24px 0;border-top:1px solid var(--line)}
+.verse-block h3{font-size:1.35rem;margin-bottom:14px}
+.verse-columns,.meaning-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.verse-columns>div,.meaning-columns>div{min-width:0;padding:17px;border-radius:14px;background:#fffaf0;border:1px solid rgba(185,145,75,.2)}
+.verse-block h4{font-size:.86rem;color:#95652d;letter-spacing:.04em;margin:0 0 8px}
+.roman,.devanagari{font-size:1.02rem;line-height:1.95;margin:0;overflow-wrap:anywhere}
+.devanagari{font-family:"Noto Serif Devanagari","Nirmala UI",serif;font-size:1.12rem}
+.meaning-columns{margin-top:12px}
+.meaning-columns p{font-size:.93rem;margin:0;color:#5e5148}
+.source-note{font-size:.83rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;margin-top:20px}
+@media(max-width:900px){.stuti-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.stuti-feature{grid-template-columns:1fr;gap:14px}.stuti-feature-image img{height:270px}.stuti-feature-copy{padding:10px 7px}.stuti-grid{grid-template-columns:1fr}.stuti-card{display:grid;grid-template-columns:112px minmax(0,1fr)}.stuti-card img{height:100%;min-height:145px}.stuti-card>div{padding:13px}.verse-columns,.meaning-columns{grid-template-columns:1fr}.verse-block{padding:18px 0}.reading-tools span{font-size:.72rem}}
