@@ -22,14 +22,18 @@
 <form id="ta-edition-form" class="ta-grid">
 <label>Work<select name="work_code" required><option value="BG">Bhagavad-gītā (BG)</option><option value="SB">Śrīmad-Bhāgavatam (SB)</option><option value="CC">Śrī Caitanya-caritāmṛta (CC)</option></select></label>
 <label>Edition code<input name="edition_code" required maxlength="60" placeholder="e.g. BG_STANDARD_1983"></label>
-<label class="ta-wide">Edition / format title<input name="edition_title" required maxlength="180" placeholder="Exact title from the title page"></label>
+<label class="ta-wide">Edition / format title<input name="title" required maxlength="180" placeholder="Exact title from the catalogue or title page"></label>
 <label>Publisher<input name="publisher" required maxlength="180"></label>
-<label>Place of publication<input name="place_of_publication" maxlength="120"></label>
 <label>Publication year<input name="publication_year" type="number" min="1400" max="2200" required></label>
-<label>ISBN / catalogue number<input name="isbn_or_catalogue_number" maxlength="40"></label>
-<label>Edition state<select name="candidate_state"><option value="candidate_not_selected">Candidate — not selected</option></select></label>
-<label class="ta-wide">Catalogue source URL<input name="catalogue_source_url" type="url" placeholder="https://…" required></label>
-<label class="ta-wide">Discovery notes<textarea name="discovery_notes" rows="2" placeholder="Record catalogue claims and discrepancies; do not infer physical verification."></textarea></label>
+<label>Edition language<input name="edition_language" value="English" required maxlength="60"></label>
+<label>ISBN<input name="isbn" maxlength="20" placeholder="Optional; checksum validated"></label>
+<label>Page count<input name="pages" type="number" min="1" placeholder="Optional catalogue claim"></label>
+<label class="ta-wide">Catalogue source URL<input name="metadata_source_url" type="url" placeholder="https://…" required></label>
+<label>Edition family<input name="edition_family" required maxlength="120" placeholder="e.g. standard hardbound"></label>
+<label>Rights-chain status<select name="rights_chain_status"><option value="authority_unverified">Authority unverified</option><option value="trusteeship_and_authority_unverified">Trusteeship and authority unverified</option></select></label>
+<label>Textual revision status<select name="textual_revision_status"><option value="unknown">Unknown</option><option value="edition-specific">Edition-specific</option><option value="original-edition-claim">Original-edition claim</option></select></label>
+<label>Candidate state<select name="candidate_state"><option value="candidate_not_selected">Candidate — not selected</option></select></label>
+<label class="ta-wide">Discovery notes<textarea name="notes" rows="2" required placeholder="Record catalogue claims and discrepancies; do not infer physical verification."></textarea></label>
 <button class="ta-button" type="submit">Add edition candidate</button>
 </form>
 <div class="ta-table-wrap"><table><thead><tr><th>Work</th><th>Edition code</th><th>Title</th><th>Year</th><th>State</th></tr></thead><tbody id="ta-edition-rows"><tr><td colspan="5">No candidates added in this session.</td></tr></tbody></table></div>
