@@ -192,34 +192,36 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
                 cur.execute(
                     """
                     insert into scripture.unit_locators
-                      (work_id, unit_id, edition_id, section_label, verse_label, source_id, locator_note)
-                    values (%s, %s, %s, %s, %s, %s, 'Edition-specific locator imported from inventory metadata')
+                      (work_id, unit_id, edition_id, section_label, verse_label, page_start, page_end, source_id, locator_note)
+                    values (%s, %s, %s, %s, %s, %s, %s, %s, 'Edition-specific locator imported from inventory metadata')
                     on conflict (unit_id, edition_id) do nothing
                     returning id
                     """,
                     (works[work_code], unit_id, editions[edition_key],
                      row.get("edition_section_label") or row["section_path"],
                      row.get("edition_verse_label") or row["canonical_ref"].split(".")[-1],
-                     source_id),
+                     row.get("page_start") or None, row.get("page_end") or None, source_id),
                 )
                 locator = cur.fetchone()
                 if locator:
                     locator_id = locator[0]
                 else:
                     cur.execute(
-                        "select id, section_label, verse_label, source_id from scripture.unit_locators where unit_id = %s and edition_id = %s",
+                        "select id, section_label, verse_label, page_start, page_end, source_id from scripture.unit_locators where unit_id = %s and edition_id = %s",
                         (unit_id, editions[edition_key]),
                     )
                     existing_locator = cur.fetchone()
                     if not existing_locator:
                         raise ValueError(f"Could not resolve locator for {row['canonical_ref']}")
-                    locator_id, section_label, verse_label, locator_source_id = existing_locator
+                    locator_id, section_label, verse_label, page_start, page_end, locator_source_id = existing_locator
                     expected_locator = (
                         row.get("edition_section_label") or row["section_path"],
                         row.get("edition_verse_label") or row["canonical_ref"].split(".")[-1],
+                        row.get("page_start") or None,
+                        row.get("page_end") or None,
                         source_id,
                     )
-                    if (section_label, verse_label, locator_source_id) != expected_locator:
+                    if (section_label, verse_label, page_start, page_end, locator_source_id) != expected_locator:
                         raise ValueError(f"Existing edition locator conflicts for {row['canonical_ref']}")
                 cur.execute(
                     """insert into scripture.import_batch_items
