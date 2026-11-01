@@ -142,3 +142,7 @@ hostnames, even if remote-target opt-in is supplied. Other remote PostgreSQL tar
 are blocked by default and require `--allow-remote-database`. Use a disposable local
 PostgreSQL database for normal development. This is an additional safeguard against
 accidental production access.
+
+See `RELEASE_AND_CONTENT_CHECKLIST.md` for the end-to-end edition, rights, inventory,
+text review, search and production-release gates. Production deployment requires
+separate project-owner approval and is not part of this development PR.
