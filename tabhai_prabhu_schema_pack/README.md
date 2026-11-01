@@ -158,3 +158,17 @@ runs both positive and negative tests for this validator.
 The general `scripts/validate_inventory.py` also checks that a verse-like unit's
 sequence number agrees with the final numeric component of its canonical reference.
 This prevents an accidental mismatch such as `BG.02.047` being imported as sequence 46.
+
+## Separate AI retrieval gate
+
+`scripture.search_ai_retrieval_content(query, language, limit)` is a separate,
+bounded-snippet retrieval contract for a future server-side AI endpoint. It does not
+reuse search-indexing permission as a substitute for AI permission. Licensed content
+must have an active, edition-matched grant that explicitly permits `ai_retrieval`
+in the requested language. Public-domain content still requires a source record and
+documented review. The SQL integration fixture proves that retrieval is denied before
+AI permission is granted and allowed only after the synthetic grant explicitly adds it.
+
+This function does not itself authorise a public endpoint or provide model safety,
+attribution, citation, rate-limiting or abuse controls. Those remain requirements for
+the future server-side application.
