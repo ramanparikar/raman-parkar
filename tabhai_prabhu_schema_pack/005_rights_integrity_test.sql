@@ -122,10 +122,10 @@ begin
   -- A grant for edition A must not be attachable to content for edition B.
   begin
     insert into scripture.unit_texts (
-      work_id, unit_id, edition_id, content_kind, language_code, text_content,
+      work_id, unit_id, edition_id, content_kind, language_code, variant_label, text_content,
       permission_grant_id, rights_state, publication_state
     ) values (
-      v_work, v_unit, v_ed2, 'original', 'sa', 'Synthetic mismatch test only',
+      v_work, v_unit, v_ed2, 'original', 'sa', 'edition-mismatch', 'Synthetic mismatch test only',
       v_grant, 'licensed_for_use', 'private'
     );
     raise exception 'Cross-edition permission grant was incorrectly accepted';
