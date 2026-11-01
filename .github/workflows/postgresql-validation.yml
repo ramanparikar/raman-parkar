@@ -8,6 +8,11 @@ on:
       - "**.py"
       - "**.yml"
       - "**.sh"
+      - "**.js"
+      - "**.cjs"
+      - "**.html"
+      - "**.css"
+      - "**.md"
       - "**.csv"
 
 permissions:
