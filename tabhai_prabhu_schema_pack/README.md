@@ -200,3 +200,15 @@ role must receive only the narrowly scoped privileges it actually needs.
 See `SERVER_API_CONTRACT.md` for the proposed future server-side search and AI
 retrieval request/response contract. It is design-only; no endpoint or production
 Supabase function has been deployed.
+
+## Rights register validation
+
+`rights_register_template.csv` records the exact rights holder, work, edition,
+content type, permitted languages and each permitted use separately. The
+`scripts/validate_rights_register.py` validator fails closed: a licensed record
+requires a permission reference, HTTPS evidence, reviewer, timestamp and explicit
+languages; a public-domain assertion requires documented HTTPS evidence and review;
+pending, unknown, restricted or uncleared records cannot enable usage flags. The
+starter template is intentionally empty and fails validation until a real rights
+record is documented. Passing this structural check is not legal advice or proof
+that a rights holder has authority to grant the recorded permission.
