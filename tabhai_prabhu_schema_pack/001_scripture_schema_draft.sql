@@ -630,6 +630,15 @@ begin
 end;
 $rls_enable$;
 
+-- Keep the scripture schema private even if application roles are granted elsewhere later.
+revoke all on schema scripture from public;
+revoke all on all tables in schema scripture from public;
+revoke all on all sequences in schema scripture from public;
+revoke all on all functions in schema scripture from public;
+alter default privileges in schema scripture revoke all on tables from public;
+alter default privileges in schema scripture revoke all on sequences from public;
+alter default privileges in schema scripture revoke execute on functions from public;
+
 commit;
 
 -- NOT INCLUDED ON PURPOSE:
