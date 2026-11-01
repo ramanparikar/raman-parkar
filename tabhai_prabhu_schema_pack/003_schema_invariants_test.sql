@@ -42,6 +42,18 @@ begin
     raise exception 'Canonical reference unique index is missing';
   end if;
 
+  if not exists (
+    select 1 from pg_constraint
+    where connamespace = 'scripture'::regnamespace
+      and conname = 'units_section_id_sequence_no_key'
+  ) then
+    raise exception 'Canonical unit sequence uniqueness constraint is missing';
+  end if;
+
+  if to_regprocedure('scripture.permission_grant_allows(uuid,uuid,text,text)') is null then
+    raise exception 'Request-time permission grant helper is missing';
+  end if;
+
   raise notice 'Tabhai Prabhu schema smoke test passed: % tables, RLS enabled.', actual_tables;
 end;
 $$;
