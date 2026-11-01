@@ -32,13 +32,13 @@ begin
 
   insert into scripture.permission_grants (
     rights_holder_id, edition_id, permission_title, permission_reference,
-    evidence_source_id, rights_state, public_display_allowed,
-    search_indexing_allowed, embeddings_allowed, ai_retrieval_allowed,
-    redistribution_allowed, reviewed_by, reviewed_at
+    evidence_source_id, rights_state, permitted_actions, permitted_languages,
+    public_display_allowed, search_indexing_allowed, embeddings_allowed,
+    ai_retrieval_allowed, redistribution_allowed, reviewed_by, reviewed_at
   ) values (
     v_holder, v_ed1, 'Synthetic CI test grant', 'SYNTHETIC-TEST-GRANT',
-    v_source, 'licensed_for_use', false, false, false, false,
-    false, 'CI fixture', now()
+    v_source, 'licensed_for_use', array['public_display','search_indexing'], array['en'],
+    true, true, false, false, false, 'CI fixture', now()
   ) returning id into v_grant;
 
   insert into scripture.sections (
@@ -59,6 +59,16 @@ begin
     v_work, v_unit, v_ed1, 'original', 'sa', 'Synthetic test fixture only',
     v_grant, 'licensed_for_use', 'private'
   );
+
+  if not scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'en') then
+    raise exception 'Valid, current public-display permission was incorrectly denied';
+  end if;
+  if scripture.permission_grant_allows(v_grant, v_ed1, 'ai_retrieval', 'en') then
+    raise exception 'AI retrieval was incorrectly allowed by a grant that excludes it';
+  end if;
+  if scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'fr') then
+    raise exception 'A language outside the grant was incorrectly allowed';
+  end if;
 
   -- A grant for edition A must not be attachable to content for edition B.
   begin
