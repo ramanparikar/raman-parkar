@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate bibliographic candidate CSVs without asserting edition correctness."""
 import csv
+import re
 import sys
 from pathlib import Path
 
@@ -9,6 +10,18 @@ REQUIRED = {
     "edition_language", "metadata_source_url", "candidate_state", "notes",
 }
 VALID_WORKS = {"BG", "SB", "CC"}
+
+
+def valid_isbn(value: str) -> bool:
+    compact = re.sub(r"[- ]", "", value.strip()).upper()
+    if re.fullmatch(r"\\d{9}[\\dX]", compact):
+        digits = [10 if char == "X" else int(char) for char in compact]
+        return sum((10 - index) * digit for index, digit in enumerate(digits)) % 11 == 0
+    if re.fullmatch(r"\\d{13}", compact):
+        digits = [int(char) for char in compact]
+        checksum = sum(digit * (1 if index % 2 == 0 else 3) for index, digit in enumerate(digits[:12]))
+        return (10 - checksum % 10) % 10 == digits[12]
+    return False
 
 
 def validate(path: Path) -> int:
@@ -28,7 +41,7 @@ def validate(path: Path) -> int:
             if not edition or key in seen:
                 raise ValueError(f"Line {line}: empty or duplicate edition_code {edition!r}")
             seen.add(key)
-            for field in ("title", "publisher", "metadata_source_url", "notes"):
+            for field in ("title", "publisher", "edition_language", "metadata_source_url", "notes"):
                 if not (row.get(field) or "").strip():
                     raise ValueError(f"Line {line}: {field} is required")
             if not (row["metadata_source_url"].startswith("https://")):
@@ -41,6 +54,16 @@ def validate(path: Path) -> int:
                 raise ValueError(f"Line {line}: publication_year must be an integer")
             if not 1400 <= year <= 2200:
                 raise ValueError(f"Line {line}: implausible publication_year {year}")
+            isbn = (row.get("isbn") or "").strip()
+            if isbn and not valid_isbn(isbn):
+                raise ValueError(f"Line {line}: invalid ISBN checksum or format {isbn!r}")
+            pages = (row.get("pages") or "").strip()
+            if pages:
+                try:
+                    if int(pages) < 1:
+                        raise ValueError
+                except ValueError:
+                    raise ValueError(f"Line {line}: pages must be a positive integer when supplied")
             count += 1
     if not count:
         raise ValueError("No edition candidates found")
