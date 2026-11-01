@@ -405,6 +405,7 @@ create or replace function scripture.search_published_content(
 returns table (
   canonical_ref text,
   edition_id uuid,
+  source_id uuid,
   record_kind text,
   language_code text,
   snippet text,
@@ -418,7 +419,7 @@ as $published_search$
     select websearch_to_tsquery('simple'::regconfig, coalesce(p_query, '')) as tsq
   ),
   matches as (
-    select u.canonical_ref, t.edition_id, t.content_kind::text as record_kind,
+    select u.canonical_ref, t.edition_id, t.source_id, t.content_kind::text as record_kind,
            t.language_code, left(t.text_content, 500) as snippet,
            ts_rank(to_tsvector('simple'::regconfig, coalesce(t.normalized_search_text, t.text_content)), q.tsq) as relevance
     from scripture.unit_texts t
@@ -440,7 +441,7 @@ as $published_search$
 
     union all
 
-    select u.canonical_ref, t.edition_id, 'translation'::text,
+    select u.canonical_ref, t.edition_id, t.source_id, 'translation'::text,
            t.language_code, left(t.translation_text, 500),
            ts_rank(to_tsvector('simple'::regconfig, t.translation_text), q.tsq)
     from scripture.translations t
@@ -462,7 +463,7 @@ as $published_search$
 
     union all
 
-    select u.canonical_ref, t.edition_id, 'word_meaning'::text,
+    select u.canonical_ref, t.edition_id, t.source_id, 'word_meaning'::text,
            t.language_code, left(t.source_token || ' — ' || t.meaning_text, 500),
            ts_rank(to_tsvector('simple'::regconfig, t.source_token || ' ' || coalesce(t.token_transliteration, '') || ' ' || t.meaning_text), q.tsq)
     from scripture.word_meanings t
@@ -484,7 +485,7 @@ as $published_search$
 
     union all
 
-    select u.canonical_ref, t.edition_id, t.commentary_kind::text,
+    select u.canonical_ref, t.edition_id, t.source_id, t.commentary_kind::text,
            t.language_code, left(t.commentary_text, 500),
            ts_rank(to_tsvector('simple'::regconfig, t.commentary_text), q.tsq)
     from scripture.commentaries t
@@ -504,7 +505,7 @@ as $published_search$
         )
       )
   )
-  select m.canonical_ref, m.edition_id, m.record_kind, m.language_code, m.snippet, m.relevance
+  select m.canonical_ref, m.edition_id, m.source_id, m.record_kind, m.language_code, m.snippet, m.relevance
   from matches m
   order by m.relevance desc
   limit greatest(1, least(coalesce(p_limit, 20), 50));
@@ -520,6 +521,7 @@ create or replace function scripture.search_ai_retrieval_content(
 returns table (
   canonical_ref text,
   edition_id uuid,
+  source_id uuid,
   record_kind text,
   language_code text,
   retrieval_excerpt text,
@@ -609,7 +611,7 @@ as $ai_retrieval_search$
         )
       )
   )
-  select m.canonical_ref, m.edition_id, m.record_kind, m.language_code, m.retrieval_excerpt, m.relevance
+  select m.canonical_ref, m.edition_id, m.source_id, m.record_kind, m.language_code, m.retrieval_excerpt, m.relevance
   from matches m
   order by m.relevance desc
   limit greatest(1, least(coalesce(p_limit, 10), 20));
