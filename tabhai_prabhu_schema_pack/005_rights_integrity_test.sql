@@ -78,7 +78,7 @@ begin
   if not exists (
     select 1
     from scripture.search_published_content('Synthetic test fixture', 'sa', 10) result
-    where result.canonical_ref = 'BG.18.997' and result.record_kind = 'original'
+    where result.canonical_ref = 'BG.18.997' and result.record_kind = 'original' and result.source_id = v_source
   ) then
     raise exception 'Verified and licensed public text was not returned by search';
   end if;
@@ -126,9 +126,9 @@ begin
   if not exists (
     select 1
     from scripture.search_ai_retrieval_content('Synthetic test fixture', 'sa', 10) result
-    where result.canonical_ref = 'BG.18.997'
+    where result.canonical_ref = 'BG.18.997' and result.source_id = v_source
   ) then
-    raise exception 'AI retrieval failed despite an explicit current AI permission';
+    raise exception 'AI retrieval failed or omitted its source provenance despite an explicit current AI permission';
   end if;
   if scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'fr') then
     raise exception 'A language outside the grant was incorrectly allowed';
