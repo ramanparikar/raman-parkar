@@ -9,6 +9,7 @@ declare
   v_source uuid;
   v_holder uuid;
   v_grant uuid;
+  v_expired_grant uuid;
   v_section uuid;
   v_unit uuid;
 begin
@@ -41,6 +42,16 @@ begin
     true, true, false, false, false, 'CI fixture', now()
   ) returning id into v_grant;
 
+  insert into scripture.permission_grants (
+    rights_holder_id, edition_id, permission_title, permission_reference,
+    evidence_source_id, rights_state, permitted_actions, permitted_languages,
+    public_display_allowed, reviewed_by, reviewed_at, expires_on
+  ) values (
+    v_holder, v_ed1, 'Synthetic expired grant', 'SYNTHETIC-EXPIRED-GRANT',
+    v_source, 'licensed_for_use', array['public_display'], array['sa'],
+    true, 'CI fixture', now(), current_date - 1
+  ) returning id into v_expired_grant;
+
   insert into scripture.sections (
     work_id, edition_id, section_kind, canonical_code, canonical_title, sequence_no
   ) values (v_work, null, 'chapter', 'BG.RIGHTS_TEST', 'Synthetic rights test section', 999)
@@ -68,6 +79,9 @@ begin
   end if;
   if scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'fr') then
     raise exception 'A language outside the grant was incorrectly allowed';
+  end if;
+  if scripture.permission_grant_allows(v_expired_grant, v_ed1, 'public_display', 'sa') then
+    raise exception 'An expired permission grant was incorrectly accepted';
   end if;
 
   -- A grant for edition A must not be attachable to content for edition B.
