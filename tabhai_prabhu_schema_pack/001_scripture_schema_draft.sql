@@ -510,6 +510,111 @@ as $published_search$
   limit greatest(1, least(coalesce(p_limit, 20), 50));
 $published_search$;
 
+-- AI retrieval is a separate permission from public display and search indexing.
+-- The function returns bounded snippets only; application policy and model controls remain required.
+create or replace function scripture.search_ai_retrieval_content(
+  p_query text,
+  p_language text,
+  p_limit integer default 10
+)
+returns table (
+  canonical_ref text,
+  edition_id uuid,
+  record_kind text,
+  language_code text,
+  retrieval_excerpt text,
+  relevance real
+)
+language sql
+stable
+set search_path = ''
+as $ai_retrieval_search$
+  with q as (
+    select websearch_to_tsquery('simple'::regconfig, coalesce(p_query, '')) as tsq
+  ),
+  matches as (
+    select u.canonical_ref, t.edition_id, t.content_kind::text as record_kind,
+           t.language_code, left(t.text_content, 1200) as retrieval_excerpt,
+           ts_rank(to_tsvector('simple'::regconfig, coalesce(t.normalized_search_text, t.text_content)), q.tsq) as relevance
+    from scripture.unit_texts t
+    join scripture.units u on u.id = t.unit_id
+    cross join q
+    where numnode(q.tsq) > 0
+      and t.language_code = p_language
+      and t.review_state = 'verified'
+      and t.publication_state = 'published'
+      and to_tsvector('simple'::regconfig, coalesce(t.normalized_search_text, t.text_content)) @@ q.tsq
+      and (
+        (t.rights_state = 'public_domain_confirmed' and t.source_id is not null)
+        or (
+          t.rights_state = 'licensed_for_use'
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'ai_retrieval', t.language_code)
+        )
+      )
+    union all
+    select u.canonical_ref, t.edition_id, 'translation'::text, t.language_code,
+           left(t.translation_text, 1200),
+           ts_rank(to_tsvector('simple'::regconfig, t.translation_text), q.tsq)
+    from scripture.translations t
+    join scripture.units u on u.id = t.unit_id
+    cross join q
+    where numnode(q.tsq) > 0
+      and t.language_code = p_language
+      and t.review_state = 'verified'
+      and t.publication_state = 'published'
+      and to_tsvector('simple'::regconfig, t.translation_text) @@ q.tsq
+      and (
+        (t.rights_state = 'public_domain_confirmed' and t.source_id is not null)
+        or (
+          t.rights_state = 'licensed_for_use'
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'ai_retrieval', t.language_code)
+        )
+      )
+    union all
+    select u.canonical_ref, t.edition_id, 'word_meaning'::text, t.language_code,
+           left(t.source_token || ' — ' || t.meaning_text, 1200),
+           ts_rank(to_tsvector('simple'::regconfig, t.source_token || ' ' || coalesce(t.token_transliteration, '') || ' ' || t.meaning_text), q.tsq)
+    from scripture.word_meanings t
+    join scripture.units u on u.id = t.unit_id
+    cross join q
+    where numnode(q.tsq) > 0
+      and t.language_code = p_language
+      and t.review_state = 'verified'
+      and t.publication_state = 'published'
+      and to_tsvector('simple'::regconfig, t.source_token || ' ' || coalesce(t.token_transliteration, '') || ' ' || t.meaning_text) @@ q.tsq
+      and (
+        (t.rights_state = 'public_domain_confirmed' and t.source_id is not null)
+        or (
+          t.rights_state = 'licensed_for_use'
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'ai_retrieval', t.language_code)
+        )
+      )
+    union all
+    select u.canonical_ref, t.edition_id, t.commentary_kind::text, t.language_code,
+           left(t.commentary_text, 1200),
+           ts_rank(to_tsvector('simple'::regconfig, t.commentary_text), q.tsq)
+    from scripture.commentaries t
+    join scripture.units u on u.id = t.unit_id
+    cross join q
+    where numnode(q.tsq) > 0
+      and t.language_code = p_language
+      and t.review_state = 'verified'
+      and t.publication_state = 'published'
+      and to_tsvector('simple'::regconfig, t.commentary_text) @@ q.tsq
+      and (
+        (t.rights_state = 'public_domain_confirmed' and t.source_id is not null)
+        or (
+          t.rights_state = 'licensed_for_use'
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'ai_retrieval', t.language_code)
+        )
+      )
+  )
+  select m.canonical_ref, m.edition_id, m.record_kind, m.language_code, m.retrieval_excerpt, m.relevance
+  from matches m
+  order by m.relevance desc
+  limit greatest(1, least(coalesce(p_limit, 10), 20));
+$ai_retrieval_search$;
+
 do $rls_enable$ 
 declare t record;
 begin
