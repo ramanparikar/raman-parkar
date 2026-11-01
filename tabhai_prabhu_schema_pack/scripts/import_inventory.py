@@ -12,6 +12,7 @@ import csv
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Any
 
 try:
@@ -26,6 +27,18 @@ REFS = {
 }
 KINDS = {"verse", "sanskrit_verse", "bengali_payar", "prose", "invocation", "song", "prayer", "caption", "other"}
 REQUIRED = {"work_code", "edition_code", "section_path", "canonical_ref", "unit_kind", "sequence_no", "inventory_source"}
+
+
+def validate_database_target(database_url: str, allow_remote: bool = False) -> None:
+    """Block accidental production Supabase connections and remote targets by default."""
+    parsed = urlparse(database_url)
+    if parsed.scheme not in {"postgres", "postgresql"} or not parsed.hostname:
+        raise ValueError("DATABASE_URL must be a PostgreSQL URL with an explicit host")
+    host = parsed.hostname.lower()
+    if host.endswith(".supabase.co"):
+        raise ValueError("Supabase projects are blocked by this importer; do not connect it to production or staging Supabase")
+    if host not in {"localhost", "127.0.0.1", "::1"} and not allow_remote:
+        raise ValueError("Remote database target blocked; use a disposable local PostgreSQL database or explicitly pass --allow-remote-database for a separately approved non-Supabase target")
 
 
 def read_inventory(path: Path) -> list[dict[str, Any]]:
@@ -59,6 +72,10 @@ def read_inventory(path: Path) -> list[dict[str, Any]]:
                 raise ValueError(f"Line {line}: sequence_no must be a positive integer")
             row["work_code"] = work
             row["sequence_no"] = seq
+            if row["unit_kind"] in {"verse", "sanskrit_verse", "bengali_payar"} and seq != int(row["canonical_ref"].split(".")[-1]):
+                raise ValueError(f"Line {line}: sequence_no must match the canonical verse number for verse-like units")
+            if not re.fullmatch(r"[A-Z0-9][A-Z0-9_.-]*", row["edition_code"]):
+                raise ValueError(f"Line {line}: edition_code must use uppercase letters, digits, dot, underscore or hyphen")
             rows.append(row)
     if not rows:
         raise ValueError("Inventory contains no rows")
@@ -225,6 +242,7 @@ def main() -> int:
     parser.add_argument("--source-id", required=True, help="Existing scripture.sources UUID documenting this inventory")
     parser.add_argument("--batch-name", default=None, help="Audit label for this import batch (defaults to CSV filename)")
     parser.add_argument("--commit", action="store_true", help="Actually commit inventory metadata; default is dry-run/rollback")
+    parser.add_argument("--allow-remote-database", action="store_true", help="Allow a remote non-Supabase PostgreSQL target; remote targets are blocked by default")
     args = parser.parse_args()
     try:
         rows = read_inventory(args.csv_file)
@@ -233,6 +251,7 @@ def main() -> int:
             args.database_url = os.environ.get("DATABASE_URL")
         if not args.database_url:
             raise ValueError("Set DATABASE_URL to a disposable/local PostgreSQL database")
+        validate_database_target(args.database_url, args.allow_remote_database)
         if psycopg is None:
             raise ValueError('Install psycopg v3: python -m pip install "psycopg[binary]"')
         with psycopg.connect(args.database_url) as conn:
