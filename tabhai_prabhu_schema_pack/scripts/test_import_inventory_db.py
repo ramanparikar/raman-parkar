@@ -50,6 +50,8 @@ class InventoryDatabaseIntegrationTests(unittest.TestCase):
             "canonical_label": "Test reference",
             "edition_section_label": "Chapter 18",
             "edition_verse_label": "999",
+            "page_start": "45",
+            "page_end": "46",
             "inventory_source": "CI test inventory source",
         }
         import_rows(self.conn, [row], str(self.source_id), commit=False, batch_name="CI dry-run batch")
@@ -60,13 +62,13 @@ class InventoryDatabaseIntegrationTests(unittest.TestCase):
         import_rows(self.conn, [row], str(self.source_id), commit=True, batch_name="CI committed batch")
         with self.conn.cursor() as cur:
             cur.execute(
-                """select u.canonical_ref, l.section_label, l.verse_label
+                """select u.canonical_ref, l.section_label, l.verse_label, l.page_start, l.page_end
                    from scripture.units u
                    join scripture.unit_locators l on l.unit_id = u.id
                    where u.canonical_ref = 'BG.18.999' and l.edition_id = %s""",
                 (self.edition_id,),
             )
-            self.assertEqual(cur.fetchone(), ("BG.18.999", "Chapter 18", "999"))
+            self.assertEqual(cur.fetchone(), ("BG.18.999", "Chapter 18", "999", "45", "46"))
             cur.execute("select id from scripture.import_batches where batch_name = %s", ("CI committed batch",))
             batch = cur.fetchone()
             self.assertIsNotNone(batch)
