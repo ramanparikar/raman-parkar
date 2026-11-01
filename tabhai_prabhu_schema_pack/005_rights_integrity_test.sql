@@ -64,10 +64,10 @@ begin
 
   -- Matching edition grant is structurally valid (content remains private).
   insert into scripture.unit_texts (
-    work_id, unit_id, edition_id, content_kind, language_code, text_content,
+    work_id, unit_id, edition_id, content_kind, language_code, text_content, source_id,
     permission_grant_id, rights_state, publication_state
   ) values (
-    v_work, v_unit, v_ed1, 'original', 'sa', 'Synthetic test fixture only',
+    v_work, v_unit, v_ed1, 'original', 'sa', 'Synthetic test fixture only', v_source,
     v_grant, 'licensed_for_use', 'private'
   );
 
