@@ -55,3 +55,7 @@ Ask for written confirmation covering:
 - Re-check grant expiry and permitted actions at request time, not only during import.
 
 This checklist does not determine whether any particular Sanskrit text or translation is public domain in every territory. Obtain rights advice where needed.
+
+## Date-sensitive notice status
+
+The separate Trust website's notice requests confirmation by **31 July 2026**, a date that has now passed (current review: 1 November 2026). The same page still says its current trusteeship is being confirmed and labels the notice informational rather than legal advice. Do not infer from the passed deadline that the rights chain has been resolved, that any existing licence is invalid, or that a particular party is authorised. Obtain current written confirmation from qualified counsel and the relevant rights holders before use.
