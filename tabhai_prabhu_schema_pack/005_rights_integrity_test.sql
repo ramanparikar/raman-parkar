@@ -37,7 +37,7 @@ begin
     ai_retrieval_allowed, redistribution_allowed, reviewed_by, reviewed_at
   ) values (
     v_holder, v_ed1, 'Synthetic CI test grant', 'SYNTHETIC-TEST-GRANT',
-    v_source, 'licensed_for_use', array['public_display','search_indexing'], array['en'],
+    v_source, 'licensed_for_use', array['public_display','search_indexing'], array['sa'],
     true, true, false, false, false, 'CI fixture', now()
   ) returning id into v_grant;
 
@@ -60,10 +60,10 @@ begin
     v_grant, 'licensed_for_use', 'private'
   );
 
-  if not scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'en') then
+  if not scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'sa') then
     raise exception 'Valid, current public-display permission was incorrectly denied';
   end if;
-  if scripture.permission_grant_allows(v_grant, v_ed1, 'ai_retrieval', 'en') then
+  if scripture.permission_grant_allows(v_grant, v_ed1, 'ai_retrieval', 'sa') then
     raise exception 'AI retrieval was incorrectly allowed by a grant that excludes it';
   end if;
   if scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'fr') then
