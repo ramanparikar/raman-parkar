@@ -47,8 +47,8 @@ class InventoryValidatorTests(unittest.TestCase):
     def test_accepts_sb_canto_and_chapter_path(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", newline="", delete=False) as handle:
             handle.write(
-                "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\\n"
-                "SB,EDITION_A,Canto 1 Chapter 2,SB.01.02.006,verse,6,Print contents page\\n"
+                "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\n"
+                "SB,EDITION_A,Canto 1 Chapter 2,SB.01.02.006,verse,6,Print contents page\n"
             )
             path = Path(handle.name)
         try:
@@ -59,8 +59,8 @@ class InventoryValidatorTests(unittest.TestCase):
     def test_accepts_cc_lila_and_chapter_path(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", newline="", delete=False) as handle:
             handle.write(
-                "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\\n"
-                "CC,EDITION_A,Adi-lila Chapter 2,CC.ADI.02.006,verse,6,Print contents page\\n"
+                "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\n"
+                "CC,EDITION_A,Adi-lila Chapter 2,CC.ADI.02.006,verse,6,Print contents page\n"
             )
             path = Path(handle.name)
         try:
