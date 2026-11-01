@@ -1,5 +1,13 @@
 (() => {
   "use strict";
+  // Redirect legacy homepage URLs to the clean root domain.
+  if (window.location.pathname === "/index.html") {
+    window.location.replace("/" + window.location.search + window.location.hash);
+    return;
+  }
+})();
+(() => {
+  "use strict";
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.querySelector("#site-navigation");
   if (!toggle || !nav) return;
