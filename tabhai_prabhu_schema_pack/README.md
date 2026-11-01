@@ -136,3 +136,9 @@ The function is an invoker function in the private schema. It does not grant bro
 anonymous access and must not be exposed directly. A reviewed server-side endpoint must
 apply rate limits, authentication/abuse controls and the required output policy. The
 database search function returns snippets (up to 500 characters), not full documents.
+
+**Database target guard:** the importer refuses all Supabase database and pooler
+hostnames, even if remote-target opt-in is supplied. Other remote PostgreSQL targets
+are blocked by default and require `--allow-remote-database`. Use a disposable local
+PostgreSQL database for normal development. This is an additional safeguard against
+accidental production access.
