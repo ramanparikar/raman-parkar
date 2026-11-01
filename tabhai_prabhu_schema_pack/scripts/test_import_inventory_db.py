@@ -31,6 +31,7 @@ class InventoryDatabaseIntegrationTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         with cls.conn.cursor() as cur:
+            cur.execute("delete from scripture.import_batches where batch_name = %s", ("CI committed batch",))
             cur.execute("delete from scripture.units where canonical_ref = 'BG.18.999'")
             cur.execute("delete from scripture.sections where canonical_code = 'BG.18' and work_id = %s", (cls.work_id,))
             cur.execute("delete from scripture.sources where id = %s", (cls.source_id,))
