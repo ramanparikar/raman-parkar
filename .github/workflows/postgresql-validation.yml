@@ -58,9 +58,11 @@ jobs:
         run: psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/003_schema_invariants_test.sql"
       - name: Validate inventory tooling
         run: |
-          python -m py_compile "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/scripts/import_inventory.py" "$PACK_DIR/scripts/test_import_inventory.py" "$PACK_DIR/scripts/validate_edition_candidates.py"
+          python -m py_compile "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/scripts/import_inventory.py" "$PACK_DIR/scripts/test_import_inventory.py" "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/scripts/validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_bg_baseline.py"
           python "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/bg_edition_candidates.csv" "$PACK_DIR/work_edition_candidates.csv"
           python -m unittest discover -s "$PACK_DIR/scripts" -p "test_import_inventory.py"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_bg_baseline.py"
+          python "$PACK_DIR/scripts/validate_bg_baseline.py" "$PACK_DIR/bg_chapter_inventory_baseline.csv" "$PACK_DIR/bg_expected_unit_inventory_provisional.csv"
           DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scripture_test" python -m unittest discover -s "$PACK_DIR/scripts" -p "test_import_inventory_db.py"
           python "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/bg_expected_unit_inventory_provisional.csv"
           test "$(($(wc -l < "$PACK_DIR/bg_expected_unit_inventory_provisional.csv") - 1))" -eq 700
