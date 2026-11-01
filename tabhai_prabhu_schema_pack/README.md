@@ -222,3 +222,8 @@ does not display verse text or claim a reference is verified. It does not connec
 Supabase, use credentials, modify the existing Shastra page, chatbot or Yatra flow,
 or call an AI service. It is kept separate on the development branch until the
 backend API and content-rights gates are reviewed.
+
+
+## Browser reference preview
+
+The development-only `tabhai-prabhu-preview.html` provides a metadata-only reference builder. Bhagavad-gita unit selectors are bounded by the provisional chapter-count baseline; the UI labels these counts as provisional and requires edition cross-checking. Srimad-Bhagavatam and Caitanya-caritamrita chapter/unit locators remain placeholders until a specific edition is inspected. The shared parser validates format only, not edition existence, textual accuracy or rights.
