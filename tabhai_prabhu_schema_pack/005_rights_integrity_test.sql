@@ -83,6 +83,20 @@ begin
     raise exception 'Verified and licensed public text was not returned by search';
   end if;
 
+  insert into scripture.unit_texts (
+    work_id, unit_id, edition_id, content_kind, language_code, text_content,
+    rights_state, publication_state
+  ) values (
+    v_work, v_unit, v_ed2, 'original', 'sa', 'Private hidden fixture',
+    'unknown', 'private'
+  );
+
+  if exists (
+    select 1 from scripture.search_published_content('Private hidden fixture', 'sa', 10)
+  ) then
+    raise exception 'Private or unverified content leaked into public search';
+  end if;
+
   if exists (
     select 1 from scripture.search_published_content('Synthetic test fixture', 'en', 10)
   ) then
@@ -91,6 +105,9 @@ begin
 
   if not scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'sa') then
     raise exception 'Valid, current public-display permission was incorrectly denied';
+  end if;
+  if scripture.permission_grant_allows(v_grant, v_ed2, 'public_display', 'sa') then
+    raise exception 'A grant was incorrectly accepted for a different edition';
   end if;
   if scripture.permission_grant_allows(v_grant, v_ed1, 'ai_retrieval', 'sa') then
     raise exception 'AI retrieval was incorrectly allowed by a grant that excludes it';
