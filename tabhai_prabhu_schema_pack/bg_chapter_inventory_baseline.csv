@@ -1,19 +1,19 @@
 work_code,chapter_number,chapter_ref,expected_verse_count,inventory_state,verification_note
-BG,1,BG.01,47,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,2,BG.02,72,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,3,BG.03,43,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,4,BG.04,42,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,5,BG.05,29,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,6,BG.06,47,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,7,BG.07,30,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,8,BG.08,28,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,9,BG.09,34,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,10,BG.10,42,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,11,BG.11,41,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,12,BG.12,20,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,13,BG.13,35,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,14,BG.14,27,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,15,BG.15,20,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,16,BG.16,19,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,17,BG.17,18,expected,Provisional standard count; cross-check against the selected edition before marking verified
-BG,18,BG.18,78,expected,Provisional standard count; cross-check against the selected edition before marking verified
+BG,1,BG.01,47,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,2,BG.02,72,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,3,BG.03,43,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,4,BG.04,42,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,5,BG.05,29,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,6,BG.06,47,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,7,BG.07,30,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,8,BG.08,28,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,9,BG.09,34,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,10,BG.10,42,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,11,BG.11,55,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,12,BG.12,20,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,13,BG.13,34,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,14,BG.14,27,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,15,BG.15,20,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,16,BG.16,24,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,17,BG.17,28,expected,Provisional standard count; cross-check selected edition before marking verified
+BG,18,BG.18,78,expected,Provisional standard count; cross-check selected edition before marking verified
