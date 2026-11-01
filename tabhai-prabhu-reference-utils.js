@@ -1,7 +1,7 @@
 (function(root,factory){const api=factory();if(typeof module==="object"&&module.exports)module.exports=api;root.TabhaiPrabhuRefs=api})(typeof globalThis!=="undefined"?globalThis:this,function(){"use strict";
 const bgCounts=Object.freeze([47,72,43,42,29,47,30,28,34,42,55,20,34,27,20,24,28,78]);
-const patterns=[{re:/^BG\\.(\\d{2})\\.(\\d{3})$/,work:"BG"},{re:/^SB\\.(\\d{2})\\.(\\d{2})\\.(\\d{3})$/,work:"SB"},{re:/^CC\\.(ADI|MADHYA|ANTYA)\\.(\\d{2,3})\\.(\\d{3})$/,work:"CC"}];
-function normalize(v){return typeof v==="string"?v.trim().toUpperCase().replace(/[\\s–—]/g,""):""}
+const patterns=[{re:/^BG\.(\d{2})\.(\d{3})$/,work:"BG"},{re:/^SB\.(\d{2})\.(\d{2})\.(\d{3})$/,work:"SB"},{re:/^CC\.(ADI|MADHYA|ANTYA)\.(\d{2,3})\.(\d{3})$/,work:"CC"}];
+function normalize(v){return typeof v==="string"?v.trim().toUpperCase().replace(/[\s–—]/g,""):""}
 function parse(v){const s=normalize(v);for(const p of patterns){const m=s.match(p.re);if(!m)continue;if(p.work==="BG"){const chapter=+m[1],unit=+m[2];if(chapter<1||chapter>18||unit<1)return null;return{canonicalRef:s,work:"BG",chapter,unit,verification:"format_only",withinProvisionalBaseline:unit<=bgCounts[chapter-1]}}if(p.work==="SB"){const canto=+m[1],chapter=+m[2],unit=+m[3];if(canto<1||canto>12||chapter<1||unit<1)return null;return{canonicalRef:s,work:"SB",canto,chapter,unit,verification:"format_only"}}const chapter=+m[2],unit=+m[3];if(chapter<1||unit<1)return null;return{canonicalRef:s,work:"CC",lila:m[1],chapter,unit,verification:"format_only"}}return null}
 function chapterCounts(){return bgCounts.slice()}
 function provisionalChapterRefs(chapter){if(!Number.isInteger(chapter)||chapter<1||chapter>18)return[];return Array.from({length:bgCounts[chapter-1]},(_,i)=>"BG."+String(chapter).padStart(2,"0")+"."+String(i+1).padStart(3,"0"))}
