@@ -62,6 +62,28 @@ begin
     raise exception 'AI retrieval permission-filtered search function is missing';
   end if;
 
+  if exists (
+    select 1
+    from pg_namespace n
+    cross join lateral aclexplode(coalesce(n.nspacl, acldefault('n', n.nspowner))) a
+    where n.nspname = 'scripture'
+      and a.grantee = 0
+      and a.privilege_type = 'USAGE'
+  ) then
+    raise exception 'PUBLIC unexpectedly has USAGE on the private scripture schema';
+  end if;
+
+  if exists (
+    select 1
+    from pg_proc p
+    cross join lateral aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a
+    where p.pronamespace = 'scripture'::regnamespace
+      and a.grantee = 0
+      and a.privilege_type = 'EXECUTE'
+  ) then
+    raise exception 'PUBLIC unexpectedly has EXECUTE on a scripture function';
+  end if;
+
   raise notice 'Tabhai Prabhu schema smoke test passed: % tables, RLS enabled.', actual_tables;
 end;
 $$;
