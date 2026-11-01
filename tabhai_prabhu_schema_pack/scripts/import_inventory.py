@@ -79,6 +79,7 @@ def section_details(row: dict[str, Any]) -> tuple[str, str, int]:
 
 
 def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: bool) -> None:
+    """Insert canonical unit inventory and edition-specific locators atomically."""
     try:
         with conn.cursor() as cur:
             cur.execute("select title, edition_id from scripture.sources where id = %s", (source_id,))
@@ -86,13 +87,12 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
             if not source:
                 raise ValueError(f"Source record {source_id} does not exist")
             source_title, source_edition_id = source
+            editions: dict[tuple[str, str], Any] = {}
+            works: dict[str, Any] = {}
+            sections: dict[tuple[str, str], Any] = {}
             for row in rows:
                 if row["inventory_source"] != source_title:
                     raise ValueError("Inventory source label does not match registered source title")
-            editions = {}
-            works = {}
-            sections = {}
-            for row in rows:
                 work_code = row["work_code"]
                 if work_code not in works:
                     cur.execute("select id from scripture.works where code = %s", (work_code,))
@@ -113,28 +113,26 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
                 if source_edition_id is not None and source_edition_id != editions[edition_key]:
                     raise ValueError("Source record is registered to a different edition")
                 section_code, section_title, section_seq = section_details(row)
-                section_key = (work_code, row["edition_code"], section_code)
+                section_key = (work_code, section_code)
                 if section_key not in sections:
                     cur.execute(
                         """
                         insert into scripture.sections
                           (work_id, edition_id, section_kind, canonical_code, canonical_title, sequence_no, edition_label)
-                        values (%s, %s, 'chapter', %s, %s, %s, %s)
-                        on conflict do nothing
-                        returning id
+                        values (%s, null, 'chapter', %s, %s, %s, null)
+                        on conflict do nothing returning id
                         """,
-                        (works[work_code], editions[edition_key], section_code, section_title, section_seq, row["section_path"]),
+                        (works[work_code], section_code, section_title, section_seq),
                     )
                     got = cur.fetchone()
                     if not got:
                         cur.execute(
-                            """select id from scripture.sections
-                               where work_id = %s and edition_id = %s and canonical_code = %s""",
-                            (works[work_code], editions[edition_key], section_code),
+                            "select id from scripture.sections where work_id = %s and canonical_code = %s",
+                            (works[work_code], section_code),
                         )
                         got = cur.fetchone()
                     if not got:
-                        raise ValueError(f"Could not resolve section {section_code}")
+                        raise ValueError(f"Could not resolve canonical section {section_code}")
                     sections[section_key] = got[0]
                 cur.execute(
                     """
@@ -142,16 +140,49 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
                       (work_id, section_id, canonical_ref, unit_kind, sequence_no, canonical_label, inventory_state, inventory_notes)
                     values (%s, %s, %s, %s::scripture.unit_kind, %s, %s, 'expected',
                             'Inventory metadata only; source and edition must be independently verified.')
-                    on conflict (canonical_ref) do nothing
+                    on conflict (canonical_ref) do nothing returning id
+                    """,
+                    (works[work_code], sections[section_key], row["canonical_ref"], row["unit_kind"],
+                     row["sequence_no"], row.get("canonical_label") or row["canonical_ref"]),
+                )
+                unit = cur.fetchone()
+                if not unit:
+                    cur.execute(
+                        "select id, work_id, section_id from scripture.units where canonical_ref = %s",
+                        (row["canonical_ref"],),
+                    )
+                    existing = cur.fetchone()
+                    if not existing or existing[1] != works[work_code] or existing[2] != sections[section_key]:
+                        raise ValueError(f"Existing canonical reference {row['canonical_ref']} conflicts with this work/section")
+                    unit_id = existing[0]
+                else:
+                    unit_id = unit[0]
+                cur.execute(
+                    """
+                    insert into scripture.unit_locators
+                      (work_id, unit_id, edition_id, section_label, verse_label, source_id, locator_note)
+                    values (%s, %s, %s, %s, %s, %s, 'Edition-specific locator imported from inventory metadata')
+                    on conflict (unit_id, edition_id) do nothing
                     returning id
                     """,
-                    (works[work_code], sections[section_key], row["canonical_ref"], row["unit_kind"], row["sequence_no"], row.get("canonical_label") or row["canonical_ref"]),
+                    (works[work_code], unit_id, editions[edition_key],
+                     row.get("edition_section_label") or row["section_path"],
+                     row.get("edition_verse_label") or row["canonical_ref"].split(".")[-1],
+                     source_id),
                 )
                 if not cur.fetchone():
-                    cur.execute("select work_id, section_id from scripture.units where canonical_ref = %s", (row["canonical_ref"],))
-                    existing = cur.fetchone()
-                    if not existing or existing[0] != works[work_code] or existing[1] != sections[section_key]:
-                        raise ValueError(f"Existing canonical reference {row['canonical_ref']} conflicts with this inventory")
+                    cur.execute(
+                        "select section_label, verse_label, source_id from scripture.unit_locators where unit_id = %s and edition_id = %s",
+                        (unit_id, editions[edition_key]),
+                    )
+                    locator = cur.fetchone()
+                    expected_locator = (
+                        row.get("edition_section_label") or row["section_path"],
+                        row.get("edition_verse_label") or row["canonical_ref"].split(".")[-1],
+                        source_id,
+                    )
+                    if locator != expected_locator:
+                        raise ValueError(f"Existing edition locator conflicts for {row['canonical_ref']}")
         if commit:
             conn.commit()
         else:
