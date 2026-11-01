@@ -77,6 +77,8 @@ class InventoryImporterTests(unittest.TestCase):
     def test_supabase_target_always_blocked(self):
         with self.assertRaisesRegex(ValueError, "Supabase projects are blocked"):
             MODULE.validate_database_target("postgresql://postgres:pass@project.supabase.co:5432/postgres", allow_remote=True)
+        with self.assertRaisesRegex(ValueError, "Supabase projects are blocked"):
+            MODULE.validate_database_target("postgresql://postgres:pass@aws-0.pooler.supabase.com:6543/postgres", allow_remote=True)
 
 
 if __name__ == "__main__":
