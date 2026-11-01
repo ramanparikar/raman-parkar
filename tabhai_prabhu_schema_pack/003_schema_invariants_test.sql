@@ -58,6 +58,10 @@ begin
     raise exception 'Rights-filtered scripture search function is missing';
   end if;
 
+  if to_regprocedure('scripture.search_ai_retrieval_content(text,text,integer)') is null then
+    raise exception 'AI retrieval permission-filtered search function is missing';
+  end if;
+
   raise notice 'Tabhai Prabhu schema smoke test passed: % tables, RLS enabled.', actual_tables;
 end;
 $$;
