@@ -75,3 +75,13 @@ test("copy control copies the currently displayed canonical reference", async ()
   await Promise.resolve();
   assert.equal(window.copied, "BG.01.001");
 });
+
+test("check locator action gives honest provisional feedback", () => {
+  const { elements, workButtons } = createPreview();
+  elements["tp-open"].click();
+  assert.match(elements["tp-description"].textContent, /Checked BG\.01\.001/);
+  assert.match(elements["tp-description"].textContent, /provisional chapter-count baseline/);
+  workButtons[1].click();
+  elements["tp-open"].click();
+  assert.match(elements["tp-description"].textContent, /must be verified against the selected printed edition/);
+});
