@@ -64,8 +64,8 @@ test("volume record requires matching candidate and all inspection checks",()=>{
  const {els}=boot();
  els["#ta-edition-form"].dispatch("submit",{preventDefault(){},currentTarget:new FakeForm(candidate)});
  els["#ta-volume-form"].dispatch("submit",{preventDefault(){},currentTarget:new FakeForm({...volume,numbering_checked:"no"})});
- assert.match(els["#ta-status"].textContent,/Independent review/);
- assert.equal(els["#ta-volume-rows"].children.length,1);
+ assert.match(els["#ta-status"].textContent,/All four physical inspection checks/);
+ assert.equal(els["#ta-volume-rows"].children.length,0);
 });
 test("duplicate volume number is rejected",()=>{
  const {els}=boot();
