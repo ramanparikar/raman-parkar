@@ -196,3 +196,7 @@ and function execution, and applies matching default-privilege revocations for f
 objects created by the migration owner. CI checks that the private schema and its
 functions are not executable/visible through default PUBLIC grants. A future backend
 role must receive only the narrowly scoped privileges it actually needs.
+
+See `SERVER_API_CONTRACT.md` for the proposed future server-side search and AI
+retrieval request/response contract. It is design-only; no endpoint or production
+Supabase function has been deployed.
