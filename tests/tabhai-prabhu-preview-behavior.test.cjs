@@ -44,7 +44,7 @@ test("Gita chapter index updates and selecting a reference fills the locator", (
   elements["tp-section"].dispatch("change");
   assert.equal(elements["tp-unit-list"].children.length, 72);
   elements["tp-unit-list"].children[71].click();
-  assert.equal(elements["tp-unit"].value, "72");
+  assert.equal(Number(elements["tp-unit"].value), 72);
   assert.equal(elements["tp-ref"].textContent, "BG.02.072");
 });
 
