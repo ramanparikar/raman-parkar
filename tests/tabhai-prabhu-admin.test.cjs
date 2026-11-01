@@ -16,7 +16,7 @@ class Element {
   reportValidity(){return true}
 }
 class FakeForm extends Element {
-  constructor(values){super();this.values=values;this.elements={};for(const [k,v] of Object.entries(values))this.elements[k]={type:v==="yes"||v==="no"?"checkbox":"text",checked:v==="yes"}}
+  constructor(values){super();this.values=values;const controls={};for(const [k,v] of Object.entries(values))controls[k]={type:v==="yes"||v==="no"?"checkbox":"text",checked:v==="yes"};this.elements={namedItem:name=>controls[name]||null}}
   reset(){this.resetCalled=true}
 }
 function boot(){
