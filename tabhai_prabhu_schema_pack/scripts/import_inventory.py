@@ -41,6 +41,22 @@ def validate_database_target(database_url: str, allow_remote: bool = False) -> N
         raise ValueError("Remote database target blocked; use a disposable local PostgreSQL database or explicitly pass --allow-remote-database for a separately approved non-Supabase target")
 
 
+def section_path_matches(work: str, match: re.Match[str], section_path: str) -> bool:
+    """Check that the human-readable section path agrees with the canonical reference."""
+    path = section_path.lower().replace("_", "-")
+    if work == "BG":
+        chapter = int(match.group(1))
+        return bool(re.search(r"chapter[-\\s]*0*" + str(chapter) + r"(?:\\D|$)", path))
+    if work == "SB":
+        canto, chapter = int(match.group(1)), int(match.group(2))
+        return bool(
+            re.search(r"canto[-\\s]*0*" + str(canto) + r"(?:\\D|$)", path)
+            and re.search(r"chapter[-\\s]*0*" + str(chapter) + r"(?:\\D|$)", path)
+        )
+    lila, chapter = match.group(1).lower(), int(match.group(2))
+    return bool(lila in path and re.search(r"chapter[-\\s]*0*" + str(chapter) + r"(?:\\D|$)", path))
+
+
 def read_inventory(path: Path) -> list[dict[str, Any]]:
     with path.open("r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
@@ -62,6 +78,8 @@ def read_inventory(path: Path) -> list[dict[str, Any]]:
                 raise ValueError(f"Line {line}: choose a real, named edition; provisional scaffold cannot be imported")
             if not row["section_path"] or not row["inventory_source"]:
                 raise ValueError(f"Line {line}: section_path and inventory_source are required")
+            if not section_path_matches(work, match, row["section_path"]):
+                raise ValueError(f"Line {line}: section_path does not agree with canonical reference {row['canonical_ref']}")
             if row["unit_kind"] not in KINDS:
                 raise ValueError(f"Line {line}: unsupported unit_kind {row['unit_kind']!r}")
             try:
