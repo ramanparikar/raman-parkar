@@ -395,7 +395,122 @@ for each row execute function scripture.set_updated_at();
 create trigger commentaries_set_updated_at before update on scripture.commentaries
 for each row execute function scripture.set_updated_at();
 
-do $$
+-- Search returns only verified, published records whose rights permit both indexing and display.
+-- This is an invoker function. Do not expose it publicly without a reviewed server-side API.
+create or replace function scripture.search_published_content(
+  p_query text,
+  p_language text,
+  p_limit integer default 20
+)
+returns table (
+  canonical_ref text,
+  edition_id uuid,
+  record_kind text,
+  language_code text,
+  snippet text,
+  relevance real
+)
+language sql
+stable
+set search_path = ''
+as $published_search$
+  with q as (
+    select websearch_to_tsquery('simple'::regconfig, coalesce(p_query, '')) as tsq
+  ),
+  matches as (
+    select u.canonical_ref, t.edition_id, t.content_kind::text as record_kind,
+           t.language_code, left(t.text_content, 500) as snippet,
+           ts_rank(to_tsvector('simple'::regconfig, coalesce(t.normalized_search_text, t.text_content)), q.tsq) as relevance
+    from scripture.unit_texts t
+    join scripture.units u on u.id = t.unit_id
+    cross join q
+    where numnode(q.tsq) > 0
+      and t.language_code = p_language
+      and t.review_state = 'verified'
+      and t.publication_state = 'published'
+      and to_tsvector('simple'::regconfig, coalesce(t.normalized_search_text, t.text_content)) @@ q.tsq
+      and (
+        (t.rights_state = 'public_domain_confirmed' and t.source_id is not null)
+        or (
+          t.rights_state = 'licensed_for_use'
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'search_indexing', t.language_code)
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'public_display', t.language_code)
+        )
+      )
+
+    union all
+
+    select u.canonical_ref, t.edition_id, 'translation'::text,
+           t.language_code, left(t.translation_text, 500),
+           ts_rank(to_tsvector('simple'::regconfig, t.translation_text), q.tsq)
+    from scripture.translations t
+    join scripture.units u on u.id = t.unit_id
+    cross join q
+    where numnode(q.tsq) > 0
+      and t.language_code = p_language
+      and t.review_state = 'verified'
+      and t.publication_state = 'published'
+      and to_tsvector('simple'::regconfig, t.translation_text) @@ q.tsq
+      and (
+        (t.rights_state = 'public_domain_confirmed' and t.source_id is not null)
+        or (
+          t.rights_state = 'licensed_for_use'
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'search_indexing', t.language_code)
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'public_display', t.language_code)
+        )
+      )
+
+    union all
+
+    select u.canonical_ref, t.edition_id, 'word_meaning'::text,
+           t.language_code, left(t.source_token || ' — ' || t.meaning_text, 500),
+           ts_rank(to_tsvector('simple'::regconfig, t.source_token || ' ' || coalesce(t.token_transliteration, '') || ' ' || t.meaning_text), q.tsq)
+    from scripture.word_meanings t
+    join scripture.units u on u.id = t.unit_id
+    cross join q
+    where numnode(q.tsq) > 0
+      and t.language_code = p_language
+      and t.review_state = 'verified'
+      and t.publication_state = 'published'
+      and to_tsvector('simple'::regconfig, t.source_token || ' ' || coalesce(t.token_transliteration, '') || ' ' || t.meaning_text) @@ q.tsq
+      and (
+        (t.rights_state = 'public_domain_confirmed' and t.source_id is not null)
+        or (
+          t.rights_state = 'licensed_for_use'
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'search_indexing', t.language_code)
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'public_display', t.language_code)
+        )
+      )
+
+    union all
+
+    select u.canonical_ref, t.edition_id, t.commentary_kind::text,
+           t.language_code, left(t.commentary_text, 500),
+           ts_rank(to_tsvector('simple'::regconfig, t.commentary_text), q.tsq)
+    from scripture.commentaries t
+    join scripture.units u on u.id = t.unit_id
+    cross join q
+    where numnode(q.tsq) > 0
+      and t.language_code = p_language
+      and t.review_state = 'verified'
+      and t.publication_state = 'published'
+      and to_tsvector('simple'::regconfig, t.commentary_text) @@ q.tsq
+      and (
+        (t.rights_state = 'public_domain_confirmed' and t.source_id is not null)
+        or (
+          t.rights_state = 'licensed_for_use'
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'search_indexing', t.language_code)
+          and scripture.permission_grant_allows(t.permission_grant_id, t.edition_id, 'public_display', t.language_code)
+        )
+      )
+  )
+  select m.canonical_ref, m.edition_id, m.record_kind, m.language_code, m.snippet, m.relevance
+  from matches m
+  order by m.relevance desc
+  limit greatest(1, least(coalesce(p_limit, 20), 50));
+$published_search$;
+
+do $
 declare t record;
 begin
   for t in
