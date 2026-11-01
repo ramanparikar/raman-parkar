@@ -77,3 +77,13 @@ Example (dry-run):
 ```bash
 python scripts/import_inventory.py your_verified_inventory.csv --source-id YOUR_SOURCE_UUID
 ```
+
+## Bhagavad-gita edition selection and rights
+
+`bg_edition_candidates.csv` records bibliographic candidates from the official BBT catalog.
+They are deliberately marked `candidate_not_selected`: select and verify the exact printing
+against the physical/reference copy before registering an edition as the primary reference.
+Do not treat the 700 provisional slots as a verified edition inventory.
+
+See `BBT_RIGHTS_CLEARANCE_CHECKLIST.md` for the written-permission scope required before
+copying, indexing, publicly displaying, or using BBT editorial material in AI retrieval.
