@@ -19,6 +19,10 @@ Use one completed worksheet per physical edition. A web catalogue entry is a dis
 - Physical copy owner / library / accession reference:
 - Photographs or scan of title page and copyright page (private evidence only; do not upload copyrighted scans to public repo):
 
+## Multi-volume edition register
+
+For multi-volume works, create one row per physical volume in `edition_volume_verification_template.csv`. Do not treat a set-level catalogue page as proof of each volume's title, printing, pagination, or canto/līlā coverage. Record volume boundaries from the actual table of contents and printed pages. Keep photographs/scans of copyright pages private unless permission expressly allows sharing.
+
 ## Textual structure and numbering
 - Does this copy preserve the original verse numbering?
 - Does it use alternate numbering, omissions, insertions, or editorial renumbering?
