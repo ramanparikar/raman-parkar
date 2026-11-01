@@ -87,3 +87,10 @@ Do not treat the 700 provisional slots as a verified edition inventory.
 
 See `BBT_RIGHTS_CLEARANCE_CHECKLIST.md` for the written-permission scope required before
 copying, indexing, publicly displaying, or using BBT editorial material in AI retrieval.
+
+**Additional rights-chain caution:** the separate site `officialbbt.org` currently publishes
+a notice about the 1972 Trust's copyright ownership and ongoing trusteeship/licensing
+regularisation. The notice says its trusteeship is still being confirmed. Do not assume
+that BBTI's permissions page or the separate Trust notice alone resolves licensing
+authority. Obtain legal advice and verify the chain of authority before any BBT editorial
+content is imported. See `BBT_RIGHTS_CLEARANCE_CHECKLIST.md`.
