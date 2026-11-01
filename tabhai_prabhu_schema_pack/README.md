@@ -181,3 +181,7 @@ so the same canonical verse can point to different printed pages in different
 printings. Roman-numeral front matter and publisher-specific pagination may be entered
 as text. A page locator is provenance metadata, not proof that the verse transcription
 or numbering has been verified.
+
+Both search contracts return the underlying `source_id` alongside the canonical
+reference and edition identifier. The server-side application can use this provenance
+key to resolve the bibliographic source record and construct an attributable answer.
