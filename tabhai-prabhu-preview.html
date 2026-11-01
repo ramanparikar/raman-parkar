@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Development preview of the Raman Parikar Gaudiya Vaishnava scripture knowledge base.">
+<title>Tabhai Prabhu | Scripture Library Preview — Raman Parikar</title>
+<link rel="stylesheet" href="style.css?v=beautify-1">
+<link rel="stylesheet" href="tabhai-prabhu-preview.css?v=2">
+<script src="tabhai-prabhu-reference-utils.js?v=1" defer></script><script src="tabhai-prabhu-preview.js?v=4" defer></script>
+</head>
+<body>
+<div class="topbar">Śāstra • Bhakti • Seva • Saṅga</div>
+<header class="site-header"><div class="container nav">
+<a class="brand" href="index.html"><img src="raman-parikar-logo.png" alt="" width="58" height="58"><span>RAMAN PARIKAR</span></a>
+<nav class="site-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="shastra.html">Shastra</a><a href="courses.html">Courses</a></nav>
+</div></header>
+<main class="tp-main">
+<section class="tp-hero"><div class="tp-kicker">A living library for śāstra study</div><h1>Tabhai Prabhu</h1><p class="tp-lead">Complete Gaudiya Vaishnava Scripture Knowledge Base</p><p class="tp-copy">A carefully organised library for exploring sacred works, editions, canonical references and verified sources.</p><span class="tp-status">DEVELOPMENT PREVIEW · METADATA ONLY</span></section>
+<section class="tp-panel" aria-labelledby="browse-title">
+<div class="tp-section-head"><div><div class="tp-kicker">Explore the library</div><h2 id="browse-title">Browse a scripture</h2></div><span class="tp-count">3 foundational works</span></div>
+<div class="tp-work-grid">
+<button class="tp-work is-selected" type="button" data-work="BG"><span class="tp-number">01</span><strong>Bhagavad-gītā</strong><small>18 chapters · 700 provisional reference slots</small></button>
+<button class="tp-work" type="button" data-work="SB"><span class="tp-number">02</span><strong>Śrīmad-Bhāgavatam</strong><small>12 cantos · edition inventory pending</small></button>
+<button class="tp-work" type="button" data-work="CC"><span class="tp-number">03</span><strong>Śrī Caitanya-caritāmṛta</strong><small>3 līlās · edition inventory pending</small></button>
+</div>
+<div class="tp-browse" id="browse-controls">
+<div class="tp-field"><label for="tp-section">Section</label><select id="tp-section"></select></div>
+<div class="tp-field" id="tp-chapter-field" hidden><label for="tp-chapter">Chapter number (provisional)</label><select id="tp-chapter"></select></div><div class="tp-field"><label for="tp-unit" id="tp-unit-label">Verse / unit number</label><input id="tp-unit" type="number" min="1" max="999" value="1" inputmode="numeric"></div>
+<button class="tp-primary" id="tp-open" type="button">Check locator</button>
+</div>
+<section class="tp-unit-index" aria-labelledby="tp-index-title"><div class="tp-index-head"><div><h3 id="tp-index-title">Chapter reference index</h3><p id="tp-index-note">700 provisional Bhagavad-gītā reference slots; not yet edition-verified.</p></div><span id="tp-index-count" class="tp-count">47 references</span></div><div id="tp-unit-list" class="tp-unit-list" aria-live="polite"></div></section>
+<div class="tp-result" id="tp-result" aria-live="polite"><div class="tp-result-label">CANONICAL REFERENCE</div><div class="tp-ref" id="tp-ref">BG.01.001</div><p id="tp-description">Choose a chapter and unit to construct a stable reference.</p><button class="tp-copy" id="tp-copy" type="button">Copy reference</button></div>
+</section>
+<section class="tp-panel tp-search-panel" aria-labelledby="search-title">
+<div class="tp-kicker">Find a passage</div><h2 id="search-title">Search by canonical reference</h2>
+<p class="tp-muted">Enter a reference such as BG.02.047, SB.01.02.006 or CC.ADI.02.006.</p>
+<form id="tp-search-form" class="tp-search"><label class="sr-only" for="tp-query">Canonical reference</label><input id="tp-query" type="search" placeholder="BG.02.047" autocomplete="off" spellcheck="false"><button class="tp-primary" type="submit">Find reference</button></form>
+<div id="tp-search-result" class="tp-search-result" aria-live="polite">The reference checker validates format only. It does not claim that a verse has been verified in a particular edition.</div>
+</section>
+<section class="tp-notice"><strong>Why is the library not showing verse text yet?</strong><p>We are building this knowledge base with edition-level accuracy, source traceability and rights safeguards. Text, translations, word meanings and commentaries will appear only after their edition and permitted uses have been verified. This preview contains no copied scripture text.</p></section>
+</main>
+<footer class="site-footer"><div class="container"><div class="footer-bottom"><span>© 2026 Raman Parikar</span><span>Śāstra • Bhakti • Seva • Saṅga</span></div></div></footer>
+</body></html>

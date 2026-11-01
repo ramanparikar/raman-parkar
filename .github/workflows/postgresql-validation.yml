@@ -1,0 +1,82 @@
+name: Scripture database PostgreSQL validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "**.sql"
+      - "**.py"
+      - "**.yml"
+      - "**.sh"
+      - "**.js"
+      - "**.cjs"
+      - "**.html"
+      - "**.css"
+      - "**.md"
+      - "**.csv"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-postgresql:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: scripture_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d scripture_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: scripture_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python database driver
+        run: python -m pip install "psycopg[binary]"
+      - name: Locate schema pack
+        shell: bash
+        run: |
+          if [[ -d tabhai_prabhu_schema_pack ]]; then
+            echo "PACK_DIR=tabhai_prabhu_schema_pack" >> "$GITHUB_ENV"
+          else
+            echo "PACK_DIR=." >> "$GITHUB_ENV"
+          fi
+      - name: Apply schema, indexes and metadata seed
+        run: |
+          psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/001_scripture_schema_draft.sql"
+          psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/002_search_indexes_draft.sql"
+          psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/004_seed_work_catalog_draft.sql"
+          psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/005_rights_integrity_test.sql"
+      - name: Run structural invariants
+        run: psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/003_schema_invariants_test.sql"
+      - name: Validate inventory tooling
+        run: |
+          node --check tabhai-prabhu-preview.js
+          node --check tabhai-prabhu-reference-utils.js
+          node --check tabhai-prabhu-admin.js
+          node --test tests/*.test.cjs
+          python -m py_compile "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/scripts/import_inventory.py" "$PACK_DIR/scripts/test_import_inventory.py" "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/scripts/validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_inventory.py" "$PACK_DIR/scripts/validate_pack.py" "$PACK_DIR/scripts/validate_rights_register.py" "$PACK_DIR/scripts/test_validate_rights_register.py" "$PACK_DIR/scripts/test_validate_edition_candidates.py" "$PACK_DIR/scripts/validate_edition_volumes.py" "$PACK_DIR/scripts/test_validate_edition_volumes.py"
+          python "$PACK_DIR/scripts/validate_pack.py"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_rights_register.py"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_edition_candidates.py"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_edition_volumes.py"
+          python "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/bg_edition_candidates.csv" "$PACK_DIR/work_edition_candidates.csv"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_import_inventory.py"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_bg_baseline.py"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_inventory.py"
+          python "$PACK_DIR/scripts/validate_bg_baseline.py" "$PACK_DIR/bg_chapter_inventory_baseline.csv" "$PACK_DIR/bg_expected_unit_inventory_provisional.csv"
+          DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scripture_test" python -m unittest discover -s "$PACK_DIR/scripts" -p "test_import_inventory_db.py"
+          python "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/bg_expected_unit_inventory_provisional.csv"
+          test "$(($(wc -l < "$PACK_DIR/bg_expected_unit_inventory_provisional.csv") - 1))" -eq 700

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Local-only development prototype for Tabhai Prabhu scripture metadata administration.">
+<title>Tabhai Prabhu | Metadata Admin Prototype</title>
+<link rel="stylesheet" href="style.css?v=beautify-1">
+<link rel="stylesheet" href="tabhai-prabhu-admin.css?v=1">
+<script src="tabhai-prabhu-admin.js?v=1" defer></script>
+</head>
+<body>
+<div class="topbar">Śāstra • Bhakti • Seva • Saṅga</div>
+<header class="site-header"><div class="container nav">
+<a class="brand" href="index.html"><img src="raman-parikar-logo.png" alt="" width="58" height="58"><span>RAMAN PARIKAR</span></a>
+<nav class="site-nav" aria-label="Main navigation"><a href="tabhai-prabhu-preview.html">Library preview</a><a href="shastra.html">Shastra</a></nav>
+</div></header>
+<main class="ta-main">
+<header class="ta-heading"><div class="ta-kicker">Development tools · Local-only prototype</div><h1>Metadata administration</h1><p>Prepare catalogue and physical-volume records for review. Nothing on this page is sent to a server or saved to Supabase.</p><div class="ta-warning"><strong>Not a secured admin system.</strong> Do not enter personal data, credentials, private permission documents or sensitive information. Records stay in this browser tab until exported; closing or refreshing may discard them.</div></header>
+<section class="ta-panel">
+<div class="ta-panel-head"><div><div class="ta-kicker">Step 1</div><h2>Register an edition candidate</h2></div><span class="ta-tag">Discovery only</span></div>
+<form id="ta-edition-form" class="ta-grid">
+<label>Work<select name="work_code" required><option value="BG">Bhagavad-gītā (BG)</option><option value="SB">Śrīmad-Bhāgavatam (SB)</option><option value="CC">Śrī Caitanya-caritāmṛta (CC)</option></select></label>
+<label>Edition code<input name="edition_code" required maxlength="60" placeholder="e.g. BG_STANDARD_1983"></label>
+<label class="ta-wide">Edition / format title<input name="title" required maxlength="180" placeholder="Exact title from the catalogue or title page"></label>
+<label>Publisher<input name="publisher" required maxlength="180"></label>
+<label>Publication year<input name="publication_year" type="number" min="1400" max="2200" required></label>
+<label>Edition language<input name="edition_language" value="English" required maxlength="60"></label>
+<label>ISBN<input name="isbn" maxlength="20" placeholder="Optional; checksum validated"></label>
+<label>Page count<input name="pages" type="number" min="1" placeholder="Optional catalogue claim"></label>
+<label class="ta-wide">Catalogue source URL<input name="metadata_source_url" type="url" placeholder="https://…" required></label>
+<label>Edition family<input name="edition_family" required maxlength="120" placeholder="e.g. standard hardbound"></label>
+<label>Rights-chain status<select name="rights_chain_status"><option value="authority_unverified">Authority unverified</option><option value="trusteeship_and_authority_unverified">Trusteeship and authority unverified</option></select></label>
+<label>Textual revision status<select name="textual_revision_status"><option value="unknown">Unknown</option><option value="edition-specific">Edition-specific</option><option value="original-edition-claim">Original-edition claim</option></select></label>
+<label>Candidate state<select name="candidate_state"><option value="candidate_not_selected">Candidate — not selected</option></select></label>
+<label class="ta-wide">Discovery notes<textarea name="notes" rows="2" required placeholder="Record catalogue claims and discrepancies; do not infer physical verification."></textarea></label>
+<button class="ta-button" type="submit">Add edition candidate</button>
+</form>
+<div class="ta-table-wrap"><table><thead><tr><th>Work</th><th>Edition code</th><th>Title</th><th>Year</th><th>State</th></tr></thead><tbody id="ta-edition-rows"><tr><td colspan="5">No candidates added in this session.</td></tr></tbody></table></div>
+</section>
+<section class="ta-panel">
+<div class="ta-panel-head"><div><div class="ta-kicker">Step 2</div><h2>Verify a physical volume</h2></div><span class="ta-tag">One row per volume</span></div>
+<p class="ta-muted">Only record what an actual physical copy or authorised library copy shows. Page labels are text so Roman numerals are accepted.</p>
+<form id="ta-volume-form" class="ta-grid">
+<label>Work<select name="work_code" required><option value="BG">BG</option><option value="SB">SB</option><option value="CC">CC</option></select></label>
+<label>Edition code<input name="edition_code" required maxlength="60" placeholder="Must match candidate code"></label>
+<label>Volume number<input name="volume_number" type="number" min="1" step="1" required></label>
+<label>Volume title<input name="volume_title" required maxlength="180"></label>
+<label>Publisher<input name="publisher" required maxlength="180"></label>
+<label>Place of publication<input name="place_of_publication" maxlength="120"></label>
+<label>Edition statement<input name="edition_statement" required maxlength="120"></label>
+<label>Impression / printing<input name="impression_number" maxlength="120"></label>
+<label>Publication year<input name="publication_year" type="number" min="1400" max="2200" required></label>
+<label>Copyright year<input name="copyright_year" type="number" min="1400" max="2200"></label>
+<label>ISBN / catalogue number<input name="isbn_or_catalogue_number" maxlength="40"></label>
+<label>Total pages<input name="total_pages" type="number" min="1" required></label>
+<label>First section / chapter<input name="first_section" required maxlength="180"></label>
+<label>Last section / chapter<input name="last_section" required maxlength="180"></label>
+<label>First printed page<input name="first_printed_page" required maxlength="30" placeholder="e.g. xii"></label>
+<label>Last printed page<input name="last_printed_page" required maxlength="30"></label>
+<fieldset class="ta-checks ta-wide"><legend>Confirm each physical inspection</legend>
+<label><input type="checkbox" name="title_page_checked" required> Title page checked</label>
+<label><input type="checkbox" name="copyright_page_checked" required> Copyright page checked</label>
+<label><input type="checkbox" name="table_of_contents_checked" required> Table of contents checked</label>
+<label><input type="checkbox" name="numbering_checked" required> Printed numbering checked</label>
+</fieldset>
+<label>Independent checker<input name="independent_checker" required maxlength="120"></label>
+<label>Date checked<input name="checked_on" type="date" required></label>
+<label class="ta-wide">Private physical-copy reference<input name="physical_copy_reference" required maxlength="180" placeholder="Library catalogue / shelf reference; no private images"></label>
+<label class="ta-wide">Evidence notes<textarea name="evidence_notes" rows="3" required placeholder="Describe what was checked and any discrepancies."></textarea></label>
+<button class="ta-button" type="submit">Add verified-volume record</button>
+</form>
+<div class="ta-table-wrap"><table><thead><tr><th>Work / edition</th><th>Volume</th><th>Pages</th><th>Checked by</th><th>Date</th></tr></thead><tbody id="ta-volume-rows"><tr><td colspan="5">No physical-volume records added in this session.</td></tr></tbody></table></div>
+</section>
+<section class="ta-panel">
+<div class="ta-panel-head"><div><div class="ta-kicker">Step 3</div><h2>Export review files</h2></div><span class="ta-tag">CSV</span></div>
+<p class="ta-muted">Export candidates and physical-volume records separately. The volume file is compatible with the repository's physical-volume validator. Exported records are still subject to independent review and rights checks.</p>
+<div class="ta-actions"><button id="ta-export-editions" class="ta-button ta-secondary" type="button">Export edition candidates CSV</button><button id="ta-export-volumes" class="ta-button" type="button">Export volume verification CSV</button><button id="ta-clear" class="ta-button ta-danger" type="button">Clear this session</button></div>
+<p id="ta-status" class="ta-status" aria-live="polite">No records yet. Nothing has been uploaded.</p>
+</section>
+<footer class="ta-footer"><a href="tabhai-prabhu-preview.html">← Return to scripture library preview</a></footer>
+</main>
+</body></html>
