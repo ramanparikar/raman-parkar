@@ -42,10 +42,13 @@ def validate(path: Path) -> list[str]:
             get = lambda key: (row.get(key) or "").strip()
             work = get("work_code").upper()
             ref = get("canonical_ref")
+            match = None
             if work not in REF_PATTERNS:
                 errors.append(f"Line {line}: unsupported work_code {work!r}")
-            elif not REF_PATTERNS[work].fullmatch(ref):
-                errors.append(f"Line {line}: canonical_ref {ref!r} does not match {work} reference format")
+            else:
+                match = REF_PATTERNS[work].fullmatch(ref)
+                if not match:
+                    errors.append(f"Line {line}: canonical_ref {ref!r} does not match {work} reference format")
             if ref in seen:
                 errors.append(f"Line {line}: duplicate canonical_ref {ref!r}")
             seen.add(ref)
@@ -59,8 +62,13 @@ def validate(path: Path) -> list[str]:
             if kind not in UNIT_KINDS:
                 errors.append(f"Line {line}: invalid unit_kind {kind!r}")
             try:
-                if int(get("sequence_no")) < 0:
+                sequence = int(get("sequence_no"))
+                if sequence < 0:
                     raise ValueError
+                if match and kind in {"verse", "sanskrit_verse", "bengali_payar"}:
+                    reference_sequence = int(ref.split(".")[-1])
+                    if sequence != reference_sequence:
+                        errors.append(f"Line {line}: sequence_no must match the canonical verse number {reference_sequence}")
             except ValueError:
                 errors.append(f"Line {line}: sequence_no must be a non-negative integer")
         if row_count == 0:
