@@ -51,12 +51,12 @@ class InventoryDatabaseIntegrationTests(unittest.TestCase):
             "edition_verse_label": "999",
             "inventory_source": "CI test inventory source",
         }
-        import_rows(self.conn, [row], str(self.source_id), commit=False)
+        import_rows(self.conn, [row], str(self.source_id), commit=False, batch_name="CI dry-run batch")
         with self.conn.cursor() as cur:
             cur.execute("select count(*) from scripture.units where canonical_ref = 'BG.18.999'")
             self.assertEqual(cur.fetchone()[0], 0)
 
-        import_rows(self.conn, [row], str(self.source_id), commit=True)
+        import_rows(self.conn, [row], str(self.source_id), commit=True, batch_name="CI committed batch")
         with self.conn.cursor() as cur:
             cur.execute(
                 """select u.canonical_ref, l.section_label, l.verse_label
@@ -66,6 +66,13 @@ class InventoryDatabaseIntegrationTests(unittest.TestCase):
                 (self.edition_id,),
             )
             self.assertEqual(cur.fetchone(), ("BG.18.999", "Chapter 18", "999"))
+            cur.execute("select id from scripture.import_batches where batch_name = %s", ("CI committed batch",))
+            batch = cur.fetchone()
+            self.assertIsNotNone(batch)
+            cur.execute("select count(*) from scripture.import_batch_items where batch_id = %s", (batch[0],))
+            self.assertEqual(cur.fetchone()[0], 2)
+            cur.execute("select count(*) from scripture.import_batches where batch_name = %s", ("CI dry-run batch",))
+            self.assertEqual(cur.fetchone()[0], 0)
 
 
 if __name__ == "__main__":
