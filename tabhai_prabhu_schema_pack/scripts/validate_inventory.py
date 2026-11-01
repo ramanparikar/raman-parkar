@@ -18,7 +18,7 @@ REQUIRED = {
 REF_PATTERNS = {
     "BG": re.compile(r"^BG\.(\d{2})\.(\d{3})$"),
     "SB": re.compile(r"^SB\.(\d{2})\.(\d{2})\.(\d{3})$"),
-    "CC": re.compile(r"^CC\.(?:ADI|MADHYA|ANTYA)\.\d{2,3}\.\d{3}$"),
+    "CC": re.compile(r"^CC\.(ADI|MADHYA|ANTYA)\.(\d{2,3})\.(\d{3})$"),
 }
 UNIT_KINDS = {
     "verse", "sanskrit_verse", "bengali_payar", "prose", "invocation",
