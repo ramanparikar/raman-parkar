@@ -10,14 +10,13 @@ import argparse
 import csv
 import re
 import sys
-from collections import Counter
 from pathlib import Path
 
 BASELINE_FIELDS = {"work_code", "chapter_number", "chapter_ref", "expected_verse_count", "inventory_state"}
 INVENTORY_FIELDS = {"work_code", "canonical_ref", "unit_kind", "sequence_no", "section_path", "edition_code"}
 
 
-def read_csv(path: Path) -> list[dict[str, str]]:
+def read_csv(path: Path) -> tuple[list[dict[str, str]], set[str]]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         return list(reader), set(reader.fieldnames or [])
