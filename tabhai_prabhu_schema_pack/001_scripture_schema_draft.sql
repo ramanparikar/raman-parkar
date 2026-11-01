@@ -78,7 +78,7 @@ create table scripture.sections (
   foreign key (edition_id, work_id) references scripture.editions(id, work_id) on delete restrict
 );
 create unique index sections_canonical_code_uq
-  on scripture.sections(work_id, edition_id, canonical_code) where canonical_code is not null;
+  on scripture.sections(work_id, canonical_code) where canonical_code is not null;
 
 create table scripture.units (
   id uuid primary key default gen_random_uuid(),
