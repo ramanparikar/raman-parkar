@@ -17,6 +17,7 @@ A free-first PostgreSQL 17 schema draft for a searchable Gaudiya Vaishnava scrip
 - `003_schema_invariants_test.sql` — read-only structural checks.
 - `004_seed_work_catalog_draft.sql` — metadata-only catalogue records for BG, SB, CC.
 - `inventory_template.csv` — expected textual unit inventory.
+- `bg_chapter_inventory_baseline.csv` and `bg_expected_unit_inventory_provisional.csv` — a 700-reference metadata scaffold for the commonly used Bhagavad-gita numbering; every row remains provisional until checked against the selected edition.
 - `rights_register_template.csv` — permissions and rights register.
 - `scripts/` — local test and static validation helpers.
 
@@ -28,6 +29,7 @@ For local testing, install PostgreSQL 17 and set `DATABASE_URL` to a disposable 
 
 ```bash
 python scripts/validate_pack.py
+python scripts/validate_inventory.py bg_expected_unit_inventory_provisional.csv
 bash scripts/run-postgres-tests.sh
 ```
 
@@ -52,3 +54,7 @@ Alternatively use the Supabase CLI + Docker local workflow in `scripts/bootstrap
 ## Production
 
 Production deployment requires a separate review and explicit approval of the exact migration, backup/restore verification, RLS review, security/performance checks, and rollback plan.
+
+## Bhagavad-gita inventory note
+
+The provisional inventory contains 700 reference slots across 18 chapters. This is a planning scaffold, not a verified edition transcription. Chapter 13 numbering and other recension/edition differences must be checked against the actual chosen edition. No Sanskrit text, translation, word meanings, or purports are included. The GitHub Actions workflow checks the row count and reference format only; it cannot certify textual accuracy.
