@@ -212,3 +212,13 @@ pending, unknown, restricted or uncleared records cannot enable usage flags. The
 starter template is intentionally empty and fails validation until a real rights
 record is documented. Passing this structural check is not legal advice or proof
 that a rights holder has authority to grant the recorded permission.
+
+## Scripture library interface preview
+
+The isolated `tabhai-prabhu-preview.html` page is a metadata-only UI prototype.
+It provides BG/SB/CC work selection, provisional chapter/unit locator construction,
+canonical-reference format checks and copy-reference interaction. It deliberately
+does not display verse text or claim a reference is verified. It does not connect to
+Supabase, use credentials, modify the existing Shastra page, chatbot or Yatra flow,
+or call an AI service. It is kept separate on the development branch until the
+backend API and content-rights gates are reviewed.
