@@ -42,7 +42,7 @@ for function_name in (
     "search_published_content",
     "search_ai_retrieval_content",
 ):
-    if not re.search(r"create\s+or\s+replace\s+function\s+scripture\\." + function_name, core, re.I):
+    if not re.search(r"create\s+or\s+replace\s+function\s+scripture\." + function_name, core, re.I):
         errors.append(f"Required rights/search function missing: {function_name}")
 if "source_id uuid" not in core[core.find("create or replace function scripture.search_published_content"):]:
     errors.append("Search results do not expose source provenance")
