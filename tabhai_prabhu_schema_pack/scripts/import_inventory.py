@@ -79,8 +79,11 @@ def section_details(row: dict[str, Any]) -> tuple[str, str, int]:
 
 
 def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: bool) -> None:
-    with conn.transaction():
+    try:
         with conn.cursor() as cur:
+            cur.execute("select id from scripture.sources where id = %s", (source_id,))
+            if not cur.fetchone():
+                raise ValueError(f"Source record {source_id} does not exist")
             editions = {}
             works = {}
             sections = {}
@@ -102,9 +105,6 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
                     if not got:
                         raise ValueError(f"Edition {row['edition_code']} for {work_code} is not registered")
                     editions[edition_key] = got[0]
-                cur.execute("select id from scripture.sources where id = %s", (source_id,))
-                if not cur.fetchone():
-                    raise ValueError(f"Source record {source_id} does not exist")
                 section_code, section_title, section_seq = section_details(row)
                 section_key = (work_code, row["edition_code"], section_code)
                 if section_key not in sections:
@@ -145,12 +145,13 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
                     existing = cur.fetchone()
                     if not existing or existing[0] != works[work_code] or existing[1] != sections[section_key]:
                         raise ValueError(f"Existing canonical reference {row['canonical_ref']} conflicts with this inventory")
-            if commit:
-                conn.commit()
-            else:
-                conn.rollback()
-
-
+        if commit:
+            conn.commit()
+        else:
+            conn.rollback()
+    except Exception:
+        conn.rollback()
+        raise
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("csv_file", type=Path)
