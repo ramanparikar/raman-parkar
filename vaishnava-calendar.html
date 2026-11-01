@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Vaishnava Calendar | Raman Parikar</title>
-  <meta name="description" content="Delhi-specific ISKCON Gaurabda Vaishnava calendar with festivals, Ekadashi fasts, Parana windows and acharya observances.">
+  <title>Raman Parikar Panchanga | Vaishnava Calendar</title>
+  <meta name="description" content="Raman Parikar Panchanga with SCSMath festival and acharya dates, plus Delhi-specific Ekadashi fasts and Parana timings.">
   <link rel="stylesheet" href="style.css?v=beautify-1">
-  <link rel="stylesheet" href="vaishnava-calendar.css?v=1">
-  <script src="vaishnava-calendar.js?v=1" defer></script>
+  <link rel="stylesheet" href="vaishnava-calendar.css?v=2">
+  <script src="vaishnava-calendar.js?v=2" defer></script>
 </head>
 <body class="vaishnava-calendar-page">
   <div class="topbar">Śāstra • Bhakti • Seva • Saṅga</div>
@@ -37,21 +37,21 @@
               <path d="M26 65h68"/>
             </svg>
           </div>
-          <p class="eyebrow">ISKCON Gaurabda • Delhi, India</p>
-          <h1>Vaishnava Calendar</h1>
-          <p class="calendar-hero__lead">A month-by-month guide to sacred observances, Ekadashi fasting, Parana windows and acharya days in the Gaurabda tradition.</p>
+          <p class="eyebrow">Raman Parikar Panchanga • Delhi, India</p>
+          <h1>Raman Parikar Panchanga</h1>
+          <p class="calendar-hero__lead">A Gaudiya Vaishnava calendar following Sri Chaitanya Saraswat Math conventions, with Delhi-local Ekadashi fasts and Parana details.</p>
           <div class="calendar-hero__facts">
             <span><strong>Location</strong> Delhi, India</span>
             <span><strong>Timezone</strong> Asia/Kolkata · IST</span>
-            <span><strong>Calculation</strong> GCal 11 · Build 5</span>
+            <span><strong>Festival calendar</strong> Sri Chaitanya Saraswat Math</span>
           </div>
         </div>
         <aside class="calendar-hero__note">
           <span class="calendar-hero__note-mark" aria-hidden="true">✦</span>
-          <p class="eyebrow">Local observances</p>
-          <h2>Calculated for Delhi</h2>
-          <p>Fasting dates and Parana windows below come from the Delhi [India] files. Local times are shown in IST.</p>
-          <p class="calendar-hero__note-small">Mayapur dates and times are kept separate from this Delhi calendar.</p>
+          <p class="eyebrow">Two source calendars</p>
+          <h2>One Panchanga, local fasts</h2>
+          <p>Festival and acharya dates follow the Nabadwip calendar. Ekadashi and Parana follow the separately calculated Delhi supplement.</p>
+          <p class="calendar-hero__note-small">Parana windows are shown exactly as published for Delhi, in Asia/Kolkata (IST).</p>
         </aside>
       </div>
     </section>
@@ -62,7 +62,7 @@
           <div>
             <p class="eyebrow">Monthly view</p>
             <h2>Festival calendar</h2>
-            <p class="section-intro">Choose a date to see its tithi, paksa, Gaurabda month and observances.</p>
+            <p class="section-intro">Every Gregorian day is selectable. Published observances appear on their source dates; ordinary days remain visible without invented tithi details.</p>
           </div>
           <p class="calendar-status" id="calendar-status" role="status" aria-live="polite">Loading Delhi calendar files…</p>
         </div>
@@ -103,18 +103,18 @@
           <div>
             <p class="eyebrow">Looking ahead</p>
             <h2>Upcoming observances</h2>
-            <p class="section-intro">Dates and fasting details are taken from the Delhi GCal 11 files.</p>
+            <p class="section-intro">Festival and acharya observances follow SCSMath; local fasts and Parana are from the Delhi supplement.</p>
           </div>
         </div>
         <div class="calendar-filters" role="group" aria-label="Filter upcoming observances">
           <button class="calendar-filter is-active" type="button" data-filter="all" aria-pressed="true">All</button>
-          <button class="calendar-filter" type="button" data-filter="fasting" aria-pressed="false">Ekadashi &amp; Parana</button>
+          <button class="calendar-filter" type="button" data-filter="fasting" aria-pressed="false">Fast &amp; Parana</button>
           <button class="calendar-filter" type="button" data-filter="festival" aria-pressed="false">Festivals</button>
           <button class="calendar-filter" type="button" data-filter="acharya" aria-pressed="false">Acharya days</button>
         </div>
         <p class="calendar-list-status" id="upcoming-status" aria-live="polite"></p>
         <div class="calendar-upcoming-grid" id="upcoming-observances"></div>
-        <noscript><p class="calendar-message">Enable JavaScript to view the interactive calendar. The Delhi TXT and ICS downloads remain available below.</p></noscript>
+        <noscript><p class="calendar-message">Enable JavaScript to view the interactive calendar. The SCSMath and Delhi source ICS downloads remain available below.</p></noscript>
       </div>
     </section>
 
@@ -122,16 +122,16 @@
       <div class="container calendar-masa-layout">
         <div>
           <p class="eyebrow">Sacred lunar months</p>
-          <h2>Gaurabda month</h2>
+          <h2>Gaurabda year &amp; masa</h2>
           <div class="masa-highlight">
-            <span class="masa-highlight__label">Selected date</span>
+            <span class="masa-highlight__label">Selected date · year from published transition dates</span>
             <strong id="current-gaurabda-month">Loading…</strong>
             <p id="month-transition-note"></p>
           </div>
         </div>
         <div class="masa-explainer">
-          <p>The calendar lists the Gaurabda masa and year from each Delhi source file. A Gregorian month can span two Gaurabda months; the calendar notes transitions where they occur.</p>
-          <p class="masa-source-note">Tithi and paksa labels follow the source file spelling. “K” means Krishna paksa and “G” means Gaura paksa.</p>
+          <p>SCSMath marks Gaurabda year transitions at Gaura Purnima: year 541 began on 4 March 2026, and year 542 began on 23 March 2027. Its ICS files list observances rather than a tithi and masa value for every Gregorian date, so this page does not infer daily tithi, paksa, or nakshatra.</p>
+          <p class="masa-source-note"><strong>Masa sequence in this cycle:</strong> Madhava, Govinda, Vishnu, Madhusudan, Trivikram (first half), Purushottam (extra month, 17 May–15 June 2026), Trivikram (second half), Vaman, Sridhar, Hrishikesh, Padmanabha, Damodar, Keshava, Narayana.</p>
         </div>
       </div>
     </section>
@@ -142,48 +142,52 @@
           <div>
             <p class="eyebrow">Keep the dates close</p>
             <h2>Download or subscribe</h2>
-            <p class="section-intro">These are the Delhi [India] calendar files used for this page.</p>
+            <p class="section-intro">Download the source calendars separately, or subscribe to the combined Raman Parikar Panchanga feed.</p>
           </div>
         </div>
         <div class="calendar-download-grid">
           <article class="download-card">
             <span class="download-card__icon" aria-hidden="true">✦</span>
-            <h3>2026 Delhi calendar</h3>
-            <p>Use the ICS file to add the 2026 observances to your calendar app, or keep the provider TXT file for reference.</p>
+            <h3>SCSMath observances</h3>
+            <p>Nabadwip festival and acharya dates for the 2026/2027 cycle; Nabadwip Ekadashi and Parana calculations are omitted from this Delhi copy.</p>
             <div class="download-card__links">
-              <a class="btn btn-primary" href="calendar-data/delhi-2026.ics" download>Download 2026 ICS</a>
-              <a class="text-link" href="calendar-data/delhi-2026.txt" download>Download source TXT</a>
+              <a class="btn btn-primary" href="calendar-data/scsmath-nabadwip-observances-2026-2027.ics" download>Download observances ICS</a>
+              <a class="text-link" href="https://scsmath.com/events/calendar/index.html" target="_blank" rel="noopener">Open SCSMath calendar</a>
             </div>
           </article>
           <article class="download-card">
             <span class="download-card__icon" aria-hidden="true">✦</span>
-            <h3>2027 Delhi calendar</h3>
-            <p>Use the ICS file to add the 2027 observances to your calendar app, or keep the provider TXT file for reference.</p>
+            <h3>Delhi local fasts &amp; Parana</h3>
+            <p>Separate Delhi calculations for Ekadashi fasts and breaking-fast windows. Times remain as printed in the local supplement.</p>
             <div class="download-card__links">
-              <a class="btn btn-primary" href="calendar-data/delhi-2027.ics" download>Download 2027 ICS</a>
-              <a class="text-link" href="calendar-data/delhi-2027.txt" download>Download source TXT</a>
+              <a class="btn btn-primary" href="calendar-data/scsmath-delhi-2026-2027.ics" download>Download Delhi ICS</a>
+              <a class="text-link" href="https://vaishnavacalendar.org/delhi/541/en/" target="_blank" rel="noopener">Open Delhi supplement</a>
             </div>
           </article>
         </div>
         <div class="calendar-subscribe">
           <div>
             <p class="eyebrow">Google Calendar subscription</p>
-            <p class="calendar-subscribe__copy">Copy the public combined feed URL, then in Google Calendar choose <strong>Other calendars → From URL</strong> and paste it.</p>
+            <p class="calendar-subscribe__copy">Download the combined feed or copy its public URL. In Google Calendar choose <strong>Other calendars → From URL</strong> and paste the URL after this site is published.</p>
             <a class="source-link" href="https://support.google.com/calendar/answer/37100" target="_blank" rel="noopener">Google Calendar instructions</a>
           </div>
           <div class="feed-copy-control">
-            <label class="visually-hidden" for="calendar-feed-url">Public Delhi calendar feed URL</label>
+            <label class="visually-hidden" for="calendar-feed-url">Public Raman Parikar Panchanga feed URL</label>
             <input id="calendar-feed-url" type="url" readonly>
             <button class="btn btn-outline" id="copy-feed-url" type="button">Copy feed URL</button>
             <span class="copy-status" id="copy-status" role="status" aria-live="polite"></span>
           </div>
         </div>
+        <div class="calendar-feed-download">
+          <a class="btn btn-primary" href="calendar-data/raman-parikar-panchanga-2026-2027.ics" download>Download combined Panchanga ICS</a>
+          <span>Festival observances use SCSMath Nabadwip dates; only local fast and Parana details use Delhi calculations.</span>
+        </div>
 
         <div class="calendar-source">
-          <p><strong>Source:</strong> <a href="https://www.vaisnavacalendar.info/calendar-file-downloads-2" target="_blank" rel="noopener">VaisnavaCalendar.info — calendar file downloads</a>; Delhi [India] 2026 and 2027 TXT/ICS exports.</p>
-          <p><strong>Calculation note:</strong> The provider states these files use the latest ISKCON-approved GCal 11 software from the GBC Calendar Committee. <strong>Provider page last updated:</strong> <time datetime="2026-03-27">27 March 2026</time>. <strong>Delhi files retrieved:</strong> <time datetime="2026-11-01">1 November 2026</time>.</p>
-          <p><strong>Location:</strong> Delhi, India (28°40′N, 77°13′E) · Asia/Kolkata (IST, UTC+05:30). Break-fast windows are the local Delhi timings printed in the Delhi TXT file.</p>
-          <p class="calendar-source__note">VaisnavaCalendar.info notes that its service is not run or sponsored by the GBC Calendar Committee. This page presents the provider’s files and is not an official GBC publication.</p>
+          <p><strong>Festival and acharya source:</strong> <a href="https://scsmath.com/events/calendar/index.html" target="_blank" rel="noopener">Sri Chaitanya Saraswat Math — Gaudiya Festival Dates for Nabadwip, 2026/2027</a>. The source page was last updated <time datetime="2026-10-25">25 October 2026</time>.</p>
+          <p><strong>Local fasting source:</strong> <a href="https://vaishnavacalendar.org/delhi/541/en/" target="_blank" rel="noopener">Worldwide local Ekadashi supplement — Delhi</a>, recalculated <time datetime="2026-03-22">22 March 2026</time>. Parana times are shown for Delhi in Asia/Kolkata (IST, UTC+05:30); no Nabadwip Parana time is presented as a Delhi time.</p>
+          <p><strong>Published span:</strong> 6 January 2026–13 April 2027. SCSMath notes that later festival dates are confirmed close to Gaura Purnima 2027. <strong>This page last checked against the sources:</strong> <time datetime="2026-11-01">1 November 2026</time>.</p>
+          <p class="calendar-source__note">The Delhi supplement directs readers to the main SCSMath calendar for festivals and other holy days; this page follows that distinction and keeps the local fasting calculation separate.</p>
         </div>
       </div>
     </section>
