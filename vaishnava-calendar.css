@@ -1,0 +1,159 @@
+/* Vaishnava Calendar page */
+.calendar-hero{position:relative;isolation:isolate;overflow:hidden;padding:clamp(48px,7vw,82px) 0;background:radial-gradient(circle at 83% 18%,rgba(185,145,75,.16),transparent 26%),radial-gradient(circle at 14% 85%,rgba(185,110,122,.12),transparent 30%),linear-gradient(125deg,#47201f,#642c2a 62%,#512522);color:#fff8ec}
+.calendar-hero::before,.calendar-hero::after{content:"";position:absolute;z-index:-1;border:1px solid rgba(230,199,140,.25);pointer-events:none}
+.calendar-hero::before{inset:18px;border-radius:28px}
+.calendar-hero::after{width:360px;height:360px;right:-120px;top:-145px;border-radius:50%;box-shadow:0 0 0 18px rgba(230,199,140,.035),0 0 0 38px rgba(230,199,140,.025)}
+.calendar-hero__inner{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(250px,.7fr);gap:56px;align-items:center}
+.calendar-hero__copy{position:relative;padding-left:24px}
+.calendar-lotus{width:94px;margin-bottom:16px;color:#d7bb7d}
+.calendar-lotus svg{display:block;width:100%;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.calendar-hero .eyebrow{color:#e7cb8f}
+.calendar-hero h1{color:#fff8ec;font-size:clamp(2.7rem,6vw,5rem);margin:10px 0 18px}
+.calendar-hero__lead{max-width:680px;color:#f2e4d4;font-size:clamp(1.05rem,1.7vw,1.24rem);line-height:1.65}
+.calendar-hero__facts{display:flex;flex-wrap:wrap;gap:10px 25px;margin-top:27px;color:#f5e7d5;font-size:.91rem}
+.calendar-hero__facts span{display:flex;gap:7px;align-items:baseline}
+.calendar-hero__facts strong{color:#e7cb8f;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em}
+.calendar-hero__note{position:relative;padding:28px 28px 26px;border:1px solid rgba(231,203,143,.48);border-radius:22px;background:rgba(35,17,17,.26);box-shadow:inset 0 0 0 5px rgba(231,203,143,.035),0 18px 40px rgba(31,14,14,.14)}
+.calendar-hero__note-mark{position:absolute;right:23px;top:17px;color:#e3c27e;font-size:1.2rem}
+.calendar-hero__note h2{color:#fff8ec;font-size:1.65rem;margin:9px 0}
+.calendar-hero__note p{color:#ead9c8;font-size:.94rem;margin:9px 0}
+.calendar-hero__note-small{border-top:1px solid rgba(231,203,143,.26);padding-top:13px;margin-top:15px!important;font-size:.83rem!important;color:#dfc49e!important}
+.calendar-section{padding-block:62px}
+.calendar-section-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;margin-bottom:25px}
+.calendar-section-heading h2{margin-bottom:7px}
+.calendar-section-heading .section-intro{margin:0;color:var(--muted)}
+.calendar-status,.calendar-list-status{margin:0;color:var(--muted);font-size:.88rem}
+.calendar-status{max-width:290px;text-align:right}
+.calendar-layout{display:grid;grid-template-columns:minmax(0,1.38fr) minmax(270px,.72fr);gap:22px;align-items:stretch}
+.calendar-panel,.calendar-detail-panel{position:relative;background:var(--ivory);border:1px solid rgba(100,44,42,.13);border-radius:22px;box-shadow:var(--shadow);padding:22px}
+.calendar-panel::before,.calendar-detail-panel::before,.download-card::before{content:"";position:absolute;top:0;left:28px;right:28px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.68}
+.calendar-toolbar{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px;margin-bottom:18px}
+.calendar-toolbar h3{margin:0;text-align:center;font-size:1.28rem;color:var(--maroon)}
+.calendar-nav-button{width:42px;height:42px;border:1px solid rgba(100,44,42,.17);border-radius:50%;background:#fffaf0;color:var(--maroon);font-size:1.7rem;line-height:1;cursor:pointer;transition:background .18s ease,transform .18s ease}
+.calendar-nav-button:hover:not(:disabled){background:#f2e4d1;transform:translateY(-1px)}
+.calendar-nav-button:disabled{opacity:.35;cursor:not-allowed}
+.calendar-weekdays,.calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.calendar-weekdays{margin-bottom:6px;color:#77685d;text-align:center;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:700}
+.calendar-weekdays span{padding:5px 0}
+.calendar-day{min-width:0;min-height:90px;border:1px solid #eee3d3;border-radius:13px;background:#fffdf8;color:var(--brown);padding:8px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+button.calendar-day{cursor:pointer;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease}
+button.calendar-day:hover{border-color:rgba(185,145,75,.75);background:#fff9ed}
+button.calendar-day.is-selected{border-color:var(--maroon);background:#f8eee1;box-shadow:inset 0 0 0 1px var(--maroon)}
+.calendar-day--empty{border-color:transparent;background:transparent}
+.calendar-day__number{font-size:.96rem;font-weight:700;line-height:1.2}
+.calendar-day__label{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:999px;padding:2px 6px;font-family:Arial,sans-serif;font-size:.66rem;line-height:1.5;color:#4a3528;background:#eee6d7}
+.calendar-day__label.fasting{background:#f5e4c7;color:#7c4512}
+.calendar-day__label.parana{background:#e8ead9;color:#4b5d39}
+.calendar-day__label.festival{background:#f2dfe0;color:#7b3d49}
+.calendar-day__label.acharya{background:#e9e0d2;color:#58452e}
+.calendar-day__dots{display:flex;gap:3px;margin-top:auto}
+.calendar-day__dots i,.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#b9914b}
+.calendar-day__dots .fasting,.legend-dot.fasting{background:#c57a2b}
+.calendar-day__dots .parana,.legend-dot.parana{background:#748154}
+.calendar-day__dots .festival,.legend-dot.festival{background:#b96e7a}
+.calendar-day__dots .acharya,.legend-dot.acharya{background:#8d7044}
+.calendar-legend{display:flex;gap:12px 19px;flex-wrap:wrap;margin-top:15px;padding-top:14px;border-top:1px solid #eee3d3;color:#74675c;font-size:.8rem}
+.calendar-legend span{display:inline-flex;gap:7px;align-items:center}
+.calendar-legend .legend-dot{width:8px;height:8px}
+.calendar-detail-panel{padding:27px 25px}
+.calendar-detail-panel .eyebrow{margin-bottom:9px}
+.calendar-detail-panel h3{font-size:1.38rem;margin:0 0 6px}
+.calendar-detail-masa{color:#8b6a35;font-weight:700;margin:0 0 15px}
+.calendar-detail-facts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:17px 0}
+.calendar-fact{padding:10px 12px;background:#faf3e6;border:1px solid #efe2cf;border-radius:12px}
+.calendar-fact span{display:block;color:#81746a;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em}
+.calendar-fact strong{display:block;color:var(--maroon);font-size:.9rem;margin-top:2px}
+.calendar-observance-list{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:9px}
+.calendar-observance-list li{padding:11px 12px;border-left:3px solid var(--gold);background:#fffaf1;border-radius:0 11px 11px 0;font-size:.91rem;line-height:1.45}
+.calendar-observance-list li.fasting{border-left-color:#c57a2b}
+.calendar-observance-list li.parana{border-left-color:#748154}
+.calendar-observance-list li.acharya{border-left-color:#8d7044}
+.calendar-observance-list li.festival{border-left-color:#b96e7a}
+.calendar-empty-note{color:var(--muted);font-size:.91rem;margin:12px 0 0}
+.calendar-filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
+.calendar-filter{border:1px solid rgba(100,44,42,.18);border-radius:999px;background:#fffdf8;color:#5f4e43;padding:8px 13px;font-size:.84rem;cursor:pointer}
+.calendar-filter:hover,.calendar-filter.is-active{background:var(--maroon);border-color:var(--maroon);color:#fff8ec}
+.calendar-list-status{margin:0 0 12px}
+.calendar-upcoming-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.upcoming-card{position:relative;min-width:0;padding:17px 18px 18px;border-radius:16px;background:var(--ivory);border:1px solid rgba(100,44,42,.11);box-shadow:0 8px 22px rgba(74,43,24,.055)}
+.upcoming-card__date{display:block;color:#8a6837;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.upcoming-card h3{font-size:1rem;margin:6px 0 8px}
+.upcoming-card p{color:#71645a;font-size:.86rem;margin:4px 0;line-height:1.45}
+.upcoming-card__tag{display:inline-block;margin-top:7px;padding:3px 8px;border-radius:999px;background:#efe5d5;color:#725530;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.upcoming-card__tag.fasting{background:#f5e4c7;color:#7c4512}
+.upcoming-card__tag.parana{background:#e8ead9;color:#4b5d39}
+.upcoming-card__tag.acharya{background:#e9e0d2;color:#58452e}
+.upcoming-card__tag.festival{background:#f2dfe0;color:#7b3d49}
+.calendar-message{padding:14px 17px;border:1px solid #e9d9be;border-radius:12px;background:#fffaf0;color:#644c32}
+.calendar-masa-layout{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(0,1.2fr);gap:40px;align-items:center}
+.masa-highlight{padding:22px 24px;border-radius:18px;border:1px solid rgba(185,145,75,.35);background:linear-gradient(135deg,#fffaf0,#f4e8d5);box-shadow:var(--shadow)}
+.masa-highlight__label{display:block;color:#84776a;font-size:.73rem;text-transform:uppercase;letter-spacing:.1em}
+.masa-highlight strong{display:block;color:var(--maroon);font-size:1.3rem;line-height:1.35;margin:6px 0}
+.masa-highlight p,.masa-explainer p{color:var(--muted);margin:8px 0 0}
+.masa-explainer{padding-left:24px;border-left:1px solid rgba(185,145,75,.55)}
+.masa-source-note{font-size:.86rem}
+.calendar-download-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.download-card{position:relative;overflow:hidden;padding:25px;background:var(--ivory);border:1px solid rgba(100,44,42,.12);border-radius:20px;box-shadow:var(--shadow)}
+.download-card__icon{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#f3e6d1;color:#8d7044}
+.download-card h3{margin:10px 0 7px}
+.download-card p{color:var(--muted);font-size:.91rem;margin:0 0 17px}
+.download-card__links{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.download-card__links .btn{font-size:.88rem;padding:10px 15px}
+.text-link,.source-link{color:var(--maroon);font-weight:700;text-decoration:underline;text-underline-offset:3px;font-size:.87rem}
+.calendar-subscribe{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,1.05fr);gap:26px;align-items:center;margin-top:20px;padding:22px 24px;background:#f4ead9;border:1px solid rgba(185,145,75,.3);border-radius:18px}
+.calendar-subscribe .eyebrow{margin:0 0 7px}
+.calendar-subscribe__copy{margin:0 0 8px;color:#67584b;font-size:.9rem}
+.feed-copy-control{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px}
+.feed-copy-control input{min-width:0;padding:10px 12px;border:1px solid #d9c7a9;border-radius:11px;background:#fffdf8;color:#57473d;font-family:Arial,sans-serif;font-size:.78rem}
+.feed-copy-control .btn{min-height:42px;padding:8px 13px;font-size:.82rem}
+.copy-status{grid-column:1/-1;min-height:1.2em;color:#586241;font-size:.8rem}
+.calendar-source{margin-top:27px;padding:20px 22px;border-top:1px solid rgba(185,145,75,.4);color:#6c6056;font-size:.85rem}
+.calendar-source p{margin:7px 0;max-width:100ch}
+.calendar-source a{color:var(--maroon);text-decoration:underline;text-underline-offset:3px;font-weight:700}
+.calendar-source__note{font-size:.78rem;color:#82766c}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:900px){
+  .calendar-hero__inner{grid-template-columns:1fr;gap:28px}
+  .calendar-hero__copy{padding-left:0}
+  .calendar-hero__note{max-width:590px}
+  .calendar-layout{grid-template-columns:minmax(0,1.1fr) minmax(250px,.9fr)}
+  .calendar-upcoming-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .calendar-section{padding-block:48px}
+  .calendar-section-heading{align-items:flex-start;flex-direction:column;gap:9px}
+  .calendar-status{text-align:left}
+  .calendar-layout,.calendar-masa-layout,.calendar-download-grid,.calendar-subscribe{grid-template-columns:1fr}
+  .calendar-panel{padding:14px 11px}
+  .calendar-detail-panel{padding:22px}
+  .calendar-day{min-height:76px;padding:6px;border-radius:10px}
+  .calendar-weekdays,.calendar-days{gap:3px}
+  .calendar-day__label{font-size:.6rem;padding:2px 4px}
+  .masa-explainer{padding:16px 0 0;border-left:0;border-top:1px solid rgba(185,145,75,.45)}
+}
+@media(max-width:480px){
+  .calendar-hero{padding:42px 0 46px}
+  .calendar-hero::before{inset:9px;border-radius:20px}
+  .calendar-hero__note{padding:23px 20px}
+  .calendar-hero__facts{display:grid;gap:7px}
+  .calendar-toolbar{grid-template-columns:38px 1fr 38px;gap:6px}
+  .calendar-toolbar h3{font-size:1.05rem}
+  .calendar-nav-button{width:36px;height:36px;font-size:1.45rem}
+  .calendar-weekdays{font-size:.63rem}
+  .calendar-day{min-height:57px;padding:5px 3px;align-items:center;gap:3px}
+  .calendar-day__number{font-size:.82rem}
+  .calendar-day__label{display:none}
+  .calendar-day__dots{justify-content:center;margin-top:3px}
+  .calendar-day__dots i{width:6px;height:6px}
+  .calendar-upcoming-grid{grid-template-columns:1fr}
+  .calendar-filters{gap:6px}
+  .calendar-filter{padding:7px 10px;font-size:.77rem}
+  .calendar-detail-facts{gap:7px}
+  .calendar-fact{padding:8px 9px}
+  .feed-copy-control{grid-template-columns:1fr}
+  .feed-copy-control .btn{width:100%}
+  .calendar-source{padding-inline:3px}
+}
+@media(prefers-reduced-motion:reduce){
+  .calendar-day,.calendar-nav-button{transition:none}
+}

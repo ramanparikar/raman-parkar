@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Vaishnava Calendar | Raman Parikar</title>
+  <meta name="description" content="Delhi-specific ISKCON Gaurabda Vaishnava calendar with festivals, Ekadashi fasts, Parana windows and acharya observances.">
+  <link rel="stylesheet" href="style.css?v=beautify-1">
+  <link rel="stylesheet" href="vaishnava-calendar.css?v=1">
+  <script src="vaishnava-calendar.js?v=1" defer></script>
+</head>
+<body class="vaishnava-calendar-page">
+  <div class="topbar">Śāstra • Bhakti • Seva • Saṅga</div>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Raman Parikar home"><img src="raman-parikar-logo.png" alt="" width="58" height="58"><span>RAMAN PARIKAR</span></a>
+      <button class="nav-toggle" type="button" aria-controls="site-navigation" aria-expanded="false" aria-label="Open navigation" hidden>
+        <span class="menu-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="menu-label">Menu</span>
+      </button>
+      <nav class="site-nav" id="site-navigation" aria-label="Main navigation">
+        <a href="index.html">Home</a><a href="about.html">About</a><a href="shastra.html">Shastra</a><a href="kirtan-seva.html">Kirtan Seva</a><a href="courses.html">Courses</a><a href="gallery.html">Gallery</a><a href="vaishnava-calendar.html" aria-current="page">Vaishnava Calendar</a><a href="yatra.html">Govardhan Dham Yatra</a><a href="community.html" class="community-link">Community</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="calendar-hero">
+      <div class="container calendar-hero__inner">
+        <div class="calendar-hero__copy">
+          <div class="calendar-lotus" aria-hidden="true">
+            <svg viewBox="0 0 120 74" focusable="false">
+              <path d="M60 62C44 47 42 30 60 10c18 20 16 37 0 52Z"/>
+              <path d="M58 61C35 54 23 39 25 20c21 7 32 20 33 41Z"/>
+              <path d="M62 61c23-7 35-22 33-41-21 7-32 20-33 41Z"/>
+              <path d="M56 62C33 63 17 54 9 38c21-2 37 5 47 24Z"/>
+              <path d="M64 62c23 1 39-8 47-24-21-2-37 5-47 24Z"/>
+              <path d="M26 65h68"/>
+            </svg>
+          </div>
+          <p class="eyebrow">ISKCON Gaurabda • Delhi, India</p>
+          <h1>Vaishnava Calendar</h1>
+          <p class="calendar-hero__lead">A month-by-month guide to sacred observances, Ekadashi fasting, Parana windows and acharya days in the Gaurabda tradition.</p>
+          <div class="calendar-hero__facts">
+            <span><strong>Location</strong> Delhi, India</span>
+            <span><strong>Timezone</strong> Asia/Kolkata · IST</span>
+            <span><strong>Calculation</strong> GCal 11 · Build 5</span>
+          </div>
+        </div>
+        <aside class="calendar-hero__note">
+          <span class="calendar-hero__note-mark" aria-hidden="true">✦</span>
+          <p class="eyebrow">Local observances</p>
+          <h2>Calculated for Delhi</h2>
+          <p>Fasting dates and Parana windows below come from the Delhi [India] files. Local times are shown in IST.</p>
+          <p class="calendar-hero__note-small">Mayapur dates and times are kept separate from this Delhi calendar.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section calendar-section" id="calendar">
+      <div class="container">
+        <div class="calendar-section-heading">
+          <div>
+            <p class="eyebrow">Monthly view</p>
+            <h2>Festival calendar</h2>
+            <p class="section-intro">Choose a date to see its tithi, paksa, Gaurabda month and observances.</p>
+          </div>
+          <p class="calendar-status" id="calendar-status" role="status" aria-live="polite">Loading Delhi calendar files…</p>
+        </div>
+
+        <div class="calendar-layout">
+          <section class="calendar-panel" aria-labelledby="month-title">
+            <div class="calendar-toolbar">
+              <button class="calendar-nav-button" id="previous-month" type="button" aria-label="Previous month">‹</button>
+              <h3 id="month-title" aria-live="polite">Calendar month</h3>
+              <button class="calendar-nav-button" id="next-month" type="button" aria-label="Next month">›</button>
+            </div>
+            <div class="calendar-weekdays" aria-hidden="true">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="calendar-days" id="calendar-days" role="grid" aria-labelledby="month-title"></div>
+            <div class="calendar-legend" aria-label="Calendar legend">
+              <span><i class="legend-dot fasting"></i>Fast</span>
+              <span><i class="legend-dot parana"></i>Parana</span>
+              <span><i class="legend-dot festival"></i>Festival</span>
+              <span><i class="legend-dot acharya"></i>Acharya</span>
+            </div>
+          </section>
+
+          <aside class="calendar-detail-panel" aria-labelledby="selected-date-title">
+            <p class="eyebrow">Selected date</p>
+            <h3 id="selected-date-title">Choose a day</h3>
+            <p class="calendar-detail-masa" id="selected-date-masa"></p>
+            <div class="calendar-detail-facts" id="selected-date-facts"></div>
+            <div id="selected-date-observances"></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt calendar-section" id="upcoming">
+      <div class="container">
+        <div class="calendar-section-heading">
+          <div>
+            <p class="eyebrow">Looking ahead</p>
+            <h2>Upcoming observances</h2>
+            <p class="section-intro">Dates and fasting details are taken from the Delhi GCal 11 files.</p>
+          </div>
+        </div>
+        <div class="calendar-filters" role="group" aria-label="Filter upcoming observances">
+          <button class="calendar-filter is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="calendar-filter" type="button" data-filter="fasting" aria-pressed="false">Ekadashi &amp; Parana</button>
+          <button class="calendar-filter" type="button" data-filter="festival" aria-pressed="false">Festivals</button>
+          <button class="calendar-filter" type="button" data-filter="acharya" aria-pressed="false">Acharya days</button>
+        </div>
+        <p class="calendar-list-status" id="upcoming-status" aria-live="polite"></p>
+        <div class="calendar-upcoming-grid" id="upcoming-observances"></div>
+        <noscript><p class="calendar-message">Enable JavaScript to view the interactive calendar. The Delhi TXT and ICS downloads remain available below.</p></noscript>
+      </div>
+    </section>
+
+    <section class="section calendar-section" id="gaurabda">
+      <div class="container calendar-masa-layout">
+        <div>
+          <p class="eyebrow">Sacred lunar months</p>
+          <h2>Gaurabda month</h2>
+          <div class="masa-highlight">
+            <span class="masa-highlight__label">Selected date</span>
+            <strong id="current-gaurabda-month">Loading…</strong>
+            <p id="month-transition-note"></p>
+          </div>
+        </div>
+        <div class="masa-explainer">
+          <p>The calendar lists the Gaurabda masa and year from each Delhi source file. A Gregorian month can span two Gaurabda months; the calendar notes transitions where they occur.</p>
+          <p class="masa-source-note">Tithi and paksa labels follow the source file spelling. “K” means Krishna paksa and “G” means Gaura paksa.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt calendar-section" id="downloads">
+      <div class="container">
+        <div class="calendar-section-heading">
+          <div>
+            <p class="eyebrow">Keep the dates close</p>
+            <h2>Download or subscribe</h2>
+            <p class="section-intro">These are the Delhi [India] calendar files used for this page.</p>
+          </div>
+        </div>
+        <div class="calendar-download-grid">
+          <article class="download-card">
+            <span class="download-card__icon" aria-hidden="true">✦</span>
+            <h3>2026 Delhi calendar</h3>
+            <p>Use the ICS file to add the 2026 observances to your calendar app, or keep the provider TXT file for reference.</p>
+            <div class="download-card__links">
+              <a class="btn btn-primary" href="calendar-data/delhi-2026.ics" download>Download 2026 ICS</a>
+              <a class="text-link" href="calendar-data/delhi-2026.txt" download>Download source TXT</a>
+            </div>
+          </article>
+          <article class="download-card">
+            <span class="download-card__icon" aria-hidden="true">✦</span>
+            <h3>2027 Delhi calendar</h3>
+            <p>Use the ICS file to add the 2027 observances to your calendar app, or keep the provider TXT file for reference.</p>
+            <div class="download-card__links">
+              <a class="btn btn-primary" href="calendar-data/delhi-2027.ics" download>Download 2027 ICS</a>
+              <a class="text-link" href="calendar-data/delhi-2027.txt" download>Download source TXT</a>
+            </div>
+          </article>
+        </div>
+        <div class="calendar-subscribe">
+          <div>
+            <p class="eyebrow">Google Calendar subscription</p>
+            <p class="calendar-subscribe__copy">Copy the public combined feed URL, then in Google Calendar choose <strong>Other calendars → From URL</strong> and paste it.</p>
+            <a class="source-link" href="https://support.google.com/calendar/answer/37100" target="_blank" rel="noopener">Google Calendar instructions</a>
+          </div>
+          <div class="feed-copy-control">
+            <label class="visually-hidden" for="calendar-feed-url">Public Delhi calendar feed URL</label>
+            <input id="calendar-feed-url" type="url" readonly>
+            <button class="btn btn-outline" id="copy-feed-url" type="button">Copy feed URL</button>
+            <span class="copy-status" id="copy-status" role="status" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="calendar-source">
+          <p><strong>Source:</strong> <a href="https://www.vaisnavacalendar.info/calendar-file-downloads-2" target="_blank" rel="noopener">VaisnavaCalendar.info — calendar file downloads</a>; Delhi [India] 2026 and 2027 TXT/ICS exports.</p>
+          <p><strong>Calculation note:</strong> The provider states these files use the latest ISKCON-approved GCal 11 software from the GBC Calendar Committee. <strong>Provider page last updated:</strong> <time datetime="2026-03-27">27 March 2026</time>. <strong>Delhi files retrieved:</strong> <time datetime="2026-11-01">1 November 2026</time>.</p>
+          <p><strong>Location:</strong> Delhi, India (28°40′N, 77°13′E) · Asia/Kolkata (IST, UTC+05:30). Break-fast windows are the local Delhi timings printed in the Delhi TXT file.</p>
+          <p class="calendar-source__note">VaisnavaCalendar.info notes that its service is not run or sponsored by the GBC Calendar Committee. This page presents the provider’s files and is not an official GBC publication.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="index.html"><img src="raman-parikar-logo.png" alt="" width="48" height="48"><span>Raman Parikar</span></a>
+          <p>A spiritual community rooted in the Radharaman Gaudiya Vaishnava tradition, dedicated to learning, practicing and sharing the path of bhakti.</p>
+        </div>
+        <div>
+          <h3>Explore</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="shastra.html">Shastra</a></li><li><a href="kirtan-seva.html">Kirtan Seva</a></li><li><a href="courses.html">Courses</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="vaishnava-calendar.html">Vaishnava Calendar</a></li><li><a href="yatra.html">Govardhan Dham Yatra</a></li><li><a href="community.html">Community</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Connect</h3>
+          <ul class="footer-links">
+            <li>Nangloi–Kirari, Delhi</li><li><a href="https://wa.me/918368319854">WhatsApp: +91 83683 19854</a></li><li><a href="mailto:at98416@gmail.com">at98416@gmail.com</a></li><li><a href="https://youtube.com/@ramanparikar" target="_blank" rel="noopener">YouTube: Raman Parikar</a></li><li><a href="https://www.instagram.com/raman_parikar/" target="_blank" rel="noopener">Instagram: @raman_parikar</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 Raman Parikar. All rights reserved.</span><span>Śāstra • Bhakti • Seva • Saṅga</span></div>
+    </div>
+  </footer>
+  <script src="site.js?v=1" defer></script>
+  <script src="chatbot.js?v=9" defer></script>
+</body>
+</html>
