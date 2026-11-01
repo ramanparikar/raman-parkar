@@ -14,10 +14,10 @@ VALID_WORKS = {"BG", "SB", "CC"}
 
 def valid_isbn(value: str) -> bool:
     compact = re.sub(r"[- ]", "", value.strip()).upper()
-    if re.fullmatch(r"\\d{9}[\\dX]", compact):
+    if re.fullmatch(r"\d{9}[\dX]", compact):
         digits = [10 if char == "X" else int(char) for char in compact]
         return sum((10 - index) * digit for index, digit in enumerate(digits)) % 11 == 0
-    if re.fullmatch(r"\\d{13}", compact):
+    if re.fullmatch(r"\d{13}", compact):
         digits = [int(char) for char in compact]
         checksum = sum(digit * (1 if index % 2 == 0 else 3) for index, digit in enumerate(digits[:12]))
         return (10 - checksum % 10) % 10 == digits[12]
