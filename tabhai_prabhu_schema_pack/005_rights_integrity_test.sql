@@ -112,6 +112,24 @@ begin
   if scripture.permission_grant_allows(v_grant, v_ed1, 'ai_retrieval', 'sa') then
     raise exception 'AI retrieval was incorrectly allowed by a grant that excludes it';
   end if;
+  if exists (
+    select 1 from scripture.search_ai_retrieval_content('Synthetic test fixture', 'sa', 10)
+  ) then
+    raise exception 'AI retrieval returned content without AI retrieval permission';
+  end if;
+
+  update scripture.permission_grants
+  set permitted_actions = array['public_display','search_indexing','ai_retrieval'],
+      ai_retrieval_allowed = true
+  where id = v_grant;
+
+  if not exists (
+    select 1
+    from scripture.search_ai_retrieval_content('Synthetic test fixture', 'sa', 10) result
+    where result.canonical_ref = 'BG.18.997'
+  ) then
+    raise exception 'AI retrieval failed despite an explicit current AI permission';
+  end if;
   if scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'fr') then
     raise exception 'A language outside the grant was incorrectly allowed';
   end if;
