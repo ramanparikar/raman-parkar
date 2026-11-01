@@ -121,3 +121,17 @@ authority for licensing remains an open verification item.
 The CI workflow runs `005_rights_integrity_test.sql` against disposable PostgreSQL. Its fixtures are synthetic and rolled back; they test edition-mismatch rejection, expired-grant rejection, denied AI retrieval, language scoping, and duplicate canonical sequence rejection.
 
 `BBT_RIGHTS_REQUEST_TEMPLATE.md` is a draft letter for seeking written permissions and verifying the licensor's authority. It is not sent automatically and is not legal advice.
+
+## Rights-filtered scripture search
+
+`scripture.search_published_content(query, language, limit)` is the database search
+contract for the future server-side API. It searches original text, translations, word
+meanings and commentaries, but returns only rows that are both verified and published.
+For licensed material it checks the exact edition's current grant for both
+`search_indexing` and `public_display`, including expiry and permitted language.
+Public-domain rows still require a source record and a confirmed rights state.
+
+The function is an invoker function in the private schema. It does not grant browser or
+anonymous access and must not be exposed directly. A reviewed server-side endpoint must
+apply rate limits, authentication/abuse controls and the required output policy. The
+database search function returns snippets (up to 500 characters), not full documents.
