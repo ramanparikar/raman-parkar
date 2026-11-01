@@ -38,6 +38,8 @@ jobs:
       PGDATABASE: scripture_test
     steps:
       - uses: actions/checkout@v4
+      - name: Install Python database driver
+        run: python -m pip install "psycopg[binary]"
       - name: Locate schema pack
         shell: bash
         run: |
@@ -56,6 +58,7 @@ jobs:
       - name: Validate inventory tooling
         run: |
           python -m py_compile "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/scripts/import_inventory.py" "$PACK_DIR/scripts/test_import_inventory.py"
-          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_*.py"
+          python -m unittest discover -s "$PACK_DIR/scripts" -p "test_import_inventory.py"
+          DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scripture_test" python -m unittest discover -s "$PACK_DIR/scripts" -p "test_import_inventory_db.py"
           python "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/bg_expected_unit_inventory_provisional.csv"
           test "$(($(wc -l < "$PACK_DIR/bg_expected_unit_inventory_provisional.csv") - 1))" -eq 700
