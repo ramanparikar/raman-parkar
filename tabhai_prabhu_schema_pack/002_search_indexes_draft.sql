@@ -20,6 +20,11 @@ create index if not exists commentaries_search_gin_idx
     to_tsvector('simple'::regconfig, commentary_text)
   );
 
+create index if not exists word_meanings_search_gin_idx
+  on scripture.word_meanings using gin (
+    to_tsvector('simple'::regconfig, source_token || ' ' || coalesce(token_transliteration, '') || ' ' || meaning_text)
+  );
+
 create index if not exists unit_texts_language_state_idx
   on scripture.unit_texts(language_code, review_state, rights_state, publication_state);
 
