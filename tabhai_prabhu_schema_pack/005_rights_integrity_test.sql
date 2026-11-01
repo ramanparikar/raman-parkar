@@ -71,6 +71,24 @@ begin
     v_grant, 'licensed_for_use', 'private'
   );
 
+  update scripture.unit_texts
+  set review_state = 'verified', publication_state = 'published'
+  where unit_id = v_unit and edition_id = v_ed1 and content_kind = 'original';
+
+  if not exists (
+    select 1
+    from scripture.search_published_content('Synthetic test fixture', 'sa', 10) result
+    where result.canonical_ref = 'BG.18.997' and result.record_kind = 'original'
+  ) then
+    raise exception 'Verified and licensed public text was not returned by search';
+  end if;
+
+  if exists (
+    select 1 from scripture.search_published_content('Synthetic test fixture', 'en', 10)
+  ) then
+    raise exception 'Search returned content for an unpermitted language';
+  end if;
+
   if not scripture.permission_grant_allows(v_grant, v_ed1, 'public_display', 'sa') then
     raise exception 'Valid, current public-display permission was incorrectly denied';
   end if;
