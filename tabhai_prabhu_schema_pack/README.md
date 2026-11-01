@@ -64,7 +64,8 @@ The provisional inventory contains 700 reference slots across 18 chapters. This 
 The metadata importer is `scripts/import_inventory.py`. It accepts a CSV matching
 `inventory_template.csv`, validates canonical reference formats and duplicates, and
 requires an already-registered work, named edition, and source record. It creates
-canonical chapter sections and units, then attaches edition-specific locators only.
+canonical chapter sections and units, attaches edition-specific locators, and records an
+import batch plus item-level audit entries. Dry-run rolls all of these changes back.
 
 Install its optional database driver with `python -m pip install "psycopg[binary]"`.
 Set `DATABASE_URL` to a disposable/local PostgreSQL database. First run without
