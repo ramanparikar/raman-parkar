@@ -58,6 +58,7 @@ jobs:
         run: psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/003_schema_invariants_test.sql"
       - name: Validate inventory tooling
         run: |
+          node --check tabhai-prabhu-preview.js
           python -m py_compile "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/scripts/import_inventory.py" "$PACK_DIR/scripts/test_import_inventory.py" "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/scripts/validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_inventory.py" "$PACK_DIR/scripts/validate_pack.py" "$PACK_DIR/scripts/validate_rights_register.py" "$PACK_DIR/scripts/test_validate_rights_register.py"
           python "$PACK_DIR/scripts/validate_pack.py"
           python -m unittest discover -s "$PACK_DIR/scripts" -p "test_validate_rights_register.py"
