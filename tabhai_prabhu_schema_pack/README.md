@@ -19,6 +19,7 @@ A free-first PostgreSQL 17 schema draft for a searchable Gaudiya Vaishnava scrip
 - `inventory_template.csv` — expected textual unit inventory.
 - `edition_volume_verification_template.csv` — one metadata row per physical volume/part, including title/copyright-page checks, section boundaries and independent verification evidence.
 - `scripts/validate_edition_volumes.py` — fail-closed validation for completed physical-volume records; the empty template is not treated as verified.
+- `tabhai-prabhu-admin-preview.html` — local-only metadata-entry prototype with edition candidates, physical-volume checks and CSV export. It has no authentication, backend connection or persistence and must not be used for confidential data or production administration.
 - `bg_chapter_inventory_baseline.csv` and `bg_expected_unit_inventory_provisional.csv` — a 700-reference metadata scaffold for the commonly used Bhagavad-gita numbering; every row remains provisional until checked against the selected edition.
 - `rights_register_template.csv` — permissions and rights register.
 - `scripts/` — local test and static validation helpers.
