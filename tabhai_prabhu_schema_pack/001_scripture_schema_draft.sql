@@ -93,6 +93,7 @@ create table scripture.units (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint unit_sequence_nonnegative check (sequence_no >= 0),
+  unique (id, work_id),
   foreign key (section_id, work_id) references scripture.sections(id, work_id) on delete restrict
 );
 create index units_work_section_sequence_idx on scripture.units(work_id, section_id, sequence_no);
