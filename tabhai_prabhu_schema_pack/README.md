@@ -58,3 +58,22 @@ Production deployment requires a separate review and explicit approval of the ex
 ## Bhagavad-gita inventory note
 
 The provisional inventory contains 700 reference slots across 18 chapters. This is a planning scaffold, not a verified edition transcription. Chapter 13 numbering and other recension/edition differences must be checked against the actual chosen edition. No Sanskrit text, translation, word meanings, or purports are included. The GitHub Actions workflow checks the row count and reference format only; it cannot certify textual accuracy.
+
+## Inventory import pipeline
+
+The metadata importer is `scripts/import_inventory.py`. It accepts a CSV matching
+`inventory_template.csv`, validates canonical reference formats and duplicates, and
+requires an already-registered work, named edition, and source record. It creates
+edition-specific chapter sections and expected-unit inventory records only.
+
+Install its optional database driver with `python -m pip install "psycopg[binary]"`.
+Set `DATABASE_URL` to a disposable/local PostgreSQL database. First run without
+`--commit` (dry-run; transaction is rolled back). Only after confirming the target
+database, edition metadata, source provenance, and inventory CSV should an operator
+add `--commit`. The provisional BG scaffold is intentionally rejected by the importer
+because it does not name a real edition. No verse text or translations are imported.
+
+Example (dry-run):
+```bash
+python scripts/import_inventory.py your_verified_inventory.csv --source-id YOUR_SOURCE_UUID
+```
