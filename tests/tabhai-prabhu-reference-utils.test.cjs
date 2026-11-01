@@ -8,3 +8,7 @@ test("rejects invalid BG chapter",()=>assert.equal(refs.parse("BG.19.001"),null)
 test("rejects invalid SB canto",()=>assert.equal(refs.parse("SB.13.02.006"),null));
 test("rejects malformed references",()=>{assert.equal(refs.parse("BG.2.47"),null);assert.equal(refs.parse("invalid"),null);assert.equal(refs.parse(null),null)});
 test("never claims edition verification",()=>assert.equal(refs.parse("CC.MADHYA.20.108").verification,"format_only"));
+test("provides all 18 provisional Gita chapter counts totaling 700",()=>{const counts=refs.chapterCounts();assert.equal(counts.length,18);assert.equal(counts.reduce((a,b)=>a+b,0),700)});
+test("generates exact provisional reference slots for a chapter",()=>{const items=refs.provisionalChapterRefs(2);assert.equal(items.length,72);assert.equal(items[0],"BG.02.001");assert.equal(items[71],"BG.02.072")});
+test("rejects invalid chapter inventory requests",()=>{assert.deepEqual(refs.provisionalChapterRefs(0),[]);assert.deepEqual(refs.provisionalChapterRefs(19),[])});
+test("distinguishes a formatted reference outside the provisional count",()=>assert.equal(refs.parse("BG.01.048").withinProvisionalBaseline,false));
