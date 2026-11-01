@@ -510,7 +510,7 @@ as $published_search$
   limit greatest(1, least(coalesce(p_limit, 20), 50));
 $published_search$;
 
-do $
+do $rls_enable$ 
 declare t record;
 begin
   for t in
@@ -521,7 +521,7 @@ begin
     execute format('alter table scripture.%I enable row level security', t.tablename);
   end loop;
 end;
-$$;
+$rls_enable$;
 
 commit;
 
