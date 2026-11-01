@@ -57,5 +57,27 @@ class InventoryImporterTests(unittest.TestCase):
             )
 
 
+    def test_rejects_sequence_number_mismatch(self):
+        with self.assertRaisesRegex(ValueError, "must match the canonical verse number"):
+            self.read_csv(
+                "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\n"
+                "BG,ED1,Chapter 2,BG.02.047,verse,46,Source\n"
+            )
+
+    def test_local_database_target_allowed(self):
+        MODULE.validate_database_target("postgresql://postgres:postgres@localhost:5432/scripture_test")
+
+    def test_remote_database_blocked_by_default(self):
+        with self.assertRaisesRegex(ValueError, "Remote database target blocked"):
+            MODULE.validate_database_target("postgresql://user:pass@db.example.net:5432/scripture")
+
+    def test_remote_non_supabase_target_requires_opt_in(self):
+        MODULE.validate_database_target("postgresql://user:pass@db.example.net:5432/scripture", allow_remote=True)
+
+    def test_supabase_target_always_blocked(self):
+        with self.assertRaisesRegex(ValueError, "Supabase projects are blocked"):
+            MODULE.validate_database_target("postgresql://postgres:pass@project.supabase.co:5432/postgres", allow_remote=True)
+
+
 if __name__ == "__main__":
     unittest.main()
