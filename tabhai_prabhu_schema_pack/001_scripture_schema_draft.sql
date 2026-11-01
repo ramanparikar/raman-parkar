@@ -535,7 +535,7 @@ as $ai_retrieval_search$
     select websearch_to_tsquery('simple'::regconfig, coalesce(p_query, '')) as tsq
   ),
   matches as (
-    select u.canonical_ref, t.edition_id, t.content_kind::text as record_kind,
+    select u.canonical_ref, t.edition_id, t.source_id, t.content_kind::text as record_kind,
            t.language_code, left(t.text_content, 1200) as retrieval_excerpt,
            ts_rank(to_tsvector('simple'::regconfig, coalesce(t.normalized_search_text, t.text_content)), q.tsq) as relevance
     from scripture.unit_texts t
@@ -554,7 +554,7 @@ as $ai_retrieval_search$
         )
       )
     union all
-    select u.canonical_ref, t.edition_id, 'translation'::text, t.language_code,
+    select u.canonical_ref, t.edition_id, t.source_id, 'translation'::text, t.language_code,
            left(t.translation_text, 1200),
            ts_rank(to_tsvector('simple'::regconfig, t.translation_text), q.tsq)
     from scripture.translations t
@@ -573,7 +573,7 @@ as $ai_retrieval_search$
         )
       )
     union all
-    select u.canonical_ref, t.edition_id, 'word_meaning'::text, t.language_code,
+    select u.canonical_ref, t.edition_id, t.source_id, 'word_meaning'::text, t.language_code,
            left(t.source_token || ' — ' || t.meaning_text, 1200),
            ts_rank(to_tsvector('simple'::regconfig, t.source_token || ' ' || coalesce(t.token_transliteration, '') || ' ' || t.meaning_text), q.tsq)
     from scripture.word_meanings t
@@ -592,7 +592,7 @@ as $ai_retrieval_search$
         )
       )
     union all
-    select u.canonical_ref, t.edition_id, t.commentary_kind::text, t.language_code,
+    select u.canonical_ref, t.edition_id, t.source_id, t.commentary_kind::text, t.language_code,
            left(t.commentary_text, 1200),
            ts_rank(to_tsvector('simple'::regconfig, t.commentary_text), q.tsq)
     from scripture.commentaries t
