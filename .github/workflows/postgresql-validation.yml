@@ -53,6 +53,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/001_scripture_schema_draft.sql"
           psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/002_search_indexes_draft.sql"
           psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/004_seed_work_catalog_draft.sql"
+          psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/005_rights_integrity_test.sql"
       - name: Run structural invariants
         run: psql -v ON_ERROR_STOP=1 -f "$PACK_DIR/003_schema_invariants_test.sql"
       - name: Validate inventory tooling
