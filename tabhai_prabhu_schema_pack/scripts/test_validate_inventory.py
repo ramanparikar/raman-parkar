@@ -34,6 +34,16 @@ class InventoryValidatorTests(unittest.TestCase):
         finally:
             path.unlink(missing_ok=True)
 
+    def test_rejects_section_path_mismatch(self):
+        path = self.write_csv(47)
+        try:
+            content = path.read_text(encoding="utf-8").replace("Chapter 2", "Chapter 3")
+            path.write_text(content, encoding="utf-8")
+            errors = MODULE.validate(path)
+            self.assertTrue(any("section_path does not agree" in error for error in errors))
+        finally:
+            path.unlink(missing_ok=True)
+
     def test_rejects_malformed_reference(self):
         path = self.write_csv(47, "BG.2.47")
         try:
