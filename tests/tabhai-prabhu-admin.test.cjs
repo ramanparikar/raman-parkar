@@ -30,9 +30,10 @@ function boot(){
  return {els,downloads};
 }
 const candidate={
- work_code:"SB",edition_code:"SB_TEST_1972",edition_title:"Srimad-Bhagavatam First Canto",publisher:"Publisher",
- place_of_publication:"Mumbai",publication_year:"1972",isbn_or_catalogue_number:"",candidate_state:"candidate_not_selected",
- catalogue_source_url:"https://example.org/catalogue",discovery_notes:"Catalogue discovery only"
+ work_code:"SB",edition_code:"SB_TEST_1972",title:"Srimad-Bhagavatam First Canto",publisher:"Publisher",
+ publication_year:"1972",edition_language:"English",isbn:"",pages:"",metadata_source_url:"https://example.org/catalogue",
+ candidate_state:"candidate_not_selected",edition_family:"First Canto historical edition",rights_chain_status:"authority_unverified",
+ textual_revision_status:"unknown",notes:"Catalogue discovery only"
 };
 const volume={
  work_code:"SB",edition_code:"SB_TEST_1972",volume_number:"1",volume_title:"First Canto",publisher:"Publisher",
@@ -52,7 +53,7 @@ test("edition candidate is recorded only as unselected discovery metadata",()=>{
  assert.equal(els["#ta-edition-rows"].children.length,1);
 });
 test("HTTP catalogue sources are rejected",()=>{
- const {els}=boot();els["#ta-edition-form"].dispatch("submit",{preventDefault(){},currentTarget:new FakeForm({...candidate,catalogue_source_url:"http://example.org"})});
+ const {els}=boot();els["#ta-edition-form"].dispatch("submit",{preventDefault(){},currentTarget:new FakeForm({...candidate,metadata_source_url:"http://example.org"})});
  assert.match(els["#ta-status"].textContent,/HTTPS/);
  assert.equal(els["#ta-edition-rows"].children.length,0);
 });
@@ -82,4 +83,14 @@ test("volume CSV export creates a local download and reports no upload",()=>{
  els["#ta-export-volumes"].dispatch("click");
  assert.equal(downloads.length,1);
  assert.match(els["#ta-status"].textContent,/No upload or database write/);
+});
+
+test("edition candidate export uses the validator-compatible column contract",async()=>{
+ const {els,downloads}=boot();
+ els["#ta-edition-form"].dispatch("submit",{preventDefault(){},currentTarget:new FakeForm(candidate)});
+ els["#ta-export-editions"].dispatch("click");
+ assert.equal(downloads.length,1);
+ const csv=await downloads[0].text();
+ for(const column of ["work_code","edition_code","title","edition_language","metadata_source_url","candidate_state","edition_family","rights_chain_status","textual_revision_status","notes"]) assert.ok(csv.includes(column));
+ assert.ok(csv.includes("candidate_not_selected"));
 });
