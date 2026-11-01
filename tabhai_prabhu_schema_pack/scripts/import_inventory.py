@@ -35,7 +35,7 @@ def validate_database_target(database_url: str, allow_remote: bool = False) -> N
     if parsed.scheme not in {"postgres", "postgresql"} or not parsed.hostname:
         raise ValueError("DATABASE_URL must be a PostgreSQL URL with an explicit host")
     host = parsed.hostname.lower()
-    if host.endswith(".supabase.co"):
+    if host.endswith((".supabase.co", ".supabase.com")):
         raise ValueError("Supabase projects are blocked by this importer; do not connect it to production or staging Supabase")
     if host not in {"localhost", "127.0.0.1", "::1"} and not allow_remote:
         raise ValueError("Remote database target blocked; use a disposable local PostgreSQL database or explicitly pass --allow-remote-database for a separately approved non-Supabase target")
