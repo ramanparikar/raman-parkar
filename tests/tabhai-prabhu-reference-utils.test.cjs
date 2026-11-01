@@ -1,7 +1,7 @@
 "use strict";
 const test=require("node:test");const assert=require("node:assert/strict");const refs=require("../tabhai-prabhu-reference-utils.js");
 test("normalizes case and whitespace",()=>assert.equal(refs.normalize(" bg.02.047 "),"BG.02.047"));
-test("parses BG canonical references",()=>assert.deepEqual(refs.parse("BG.02.047"),{canonicalRef:"BG.02.047",work:"BG",chapter:2,unit:47,verification:"format_only"}));
+test("parses BG canonical references",()=>assert.deepEqual(refs.parse("BG.02.047"),{canonicalRef:"BG.02.047",work:"BG",chapter:2,unit:47,verification:"format_only",withinProvisionalBaseline:true}));
 test("parses SB canto chapter verse references",()=>assert.equal(refs.parse("SB.01.02.006").chapter,2));
 test("parses CC lila references",()=>assert.equal(refs.parse("CC.ADI.02.006").lila,"ADI"));
 test("rejects invalid BG chapter",()=>assert.equal(refs.parse("BG.19.001"),null));
