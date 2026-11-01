@@ -146,3 +146,15 @@ accidental production access.
 See `RELEASE_AND_CONTENT_CHECKLIST.md` for the end-to-end edition, rights, inventory,
 text review, search and production-release gates. Production deployment requires
 separate project-owner approval and is not part of this development PR.
+
+## Bhagavad-gita provisional inventory integrity
+
+`scripts/validate_bg_baseline.py` checks the internal arithmetic of the 18-chapter,
+700-reference planning scaffold: chapter totals, continuous verse-number sequences,
+duplicate references, section labels and provisional edition markers. It does **not**
+verify any printed edition or establish a universal verse numbering. The CI workflow
+runs both positive and negative tests for this validator.
+
+The general `scripts/validate_inventory.py` also checks that a verse-like unit's
+sequence number agrees with the final numeric component of its canonical reference.
+This prevents an accidental mismatch such as `BG.02.047` being imported as sequence 46.
