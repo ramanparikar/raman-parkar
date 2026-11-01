@@ -94,3 +94,17 @@ regularisation. The notice says its trusteeship is still being confirmed. Do not
 that BBTI's permissions page or the separate Trust notice alone resolves licensing
 authority. Obtain legal advice and verify the chain of authority before any BBT editorial
 content is imported. See `BBT_RIGHTS_CLEARANCE_CHECKLIST.md`.
+
+## BG / SB / CC edition candidates
+
+`work_edition_candidates.csv` records BBT catalogue candidates for all three works.
+These are discovery metadata only and are all marked `candidate_not_selected`. The
+Srimad-Bhagavatam 12-volume Cantos 1-10 and 18-volume Cantos 1-12 catalogued sets are
+different scopes; Sri Caitanya-caritamrita 9-volume and one-volume formats are also
+different edition structures. Do not merge their locators or assume their page maps
+are interchangeable.
+
+Use `EDITION_VERIFICATION_WORKSHEET.md` for every physical edition before registering
+it as the reference edition or importing its inventory. The separate 1972 Trust notice
+and BBTI permissions information are both recorded in the rights checklist; legal
+authority for licensing remains an open verification item.
