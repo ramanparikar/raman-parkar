@@ -172,3 +172,12 @@ AI permission is granted and allowed only after the synthetic grant explicitly a
 This function does not itself authorise a public endpoint or provide model safety,
 attribution, citation, rate-limiting or abuse controls. Those remain requirements for
 the future server-side application.
+
+## Edition-specific printed page locators
+
+The inventory template and metadata importer support optional `page_start` and
+`page_end` values. These are stored on `unit_locators` separately for each edition,
+so the same canonical verse can point to different printed pages in different
+printings. Roman-numeral front matter and publisher-specific pagination may be entered
+as text. A page locator is provenance metadata, not proof that the verse transcription
+or numbering has been verified.
