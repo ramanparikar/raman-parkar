@@ -78,8 +78,8 @@ def section_details(row: dict[str, Any]) -> tuple[str, str, int]:
     return f"CC.{lila}.{chapter}", f"{lila.title()}-lila, Chapter {int(chapter)}", int(chapter)
 
 
-def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: bool) -> None:
-    """Insert canonical unit inventory and edition-specific locators atomically."""
+def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: bool, batch_name: str = "inventory metadata import") -> None:
+    """Insert canonical units, edition locators, and audit records atomically."""
     try:
         with conn.cursor() as cur:
             cur.execute("select title, edition_id from scripture.sources where id = %s", (source_id,))
@@ -87,6 +87,15 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
             if not source:
                 raise ValueError(f"Source record {source_id} does not exist")
             source_title, source_edition_id = source
+            cur.execute(
+                """insert into scripture.import_batches
+                   (batch_name, source_id, edition_id, imported_by, import_method, batch_notes)
+                   values (%s, %s, %s, %s, %s, %s) returning id""",
+                (batch_name, source_id, source_edition_id, "inventory_importer",
+                 "csv_inventory_metadata",
+                 "Metadata-only inventory import; no scripture text or translations imported."),
+            )
+            batch_id = cur.fetchone()[0]
             editions: dict[tuple[str, str], Any] = {}
             works: dict[str, Any] = {}
             sections: dict[tuple[str, str], Any] = {}
@@ -158,6 +167,12 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
                 else:
                     unit_id = unit[0]
                 cur.execute(
+                    """insert into scripture.import_batch_items
+                       (batch_id, entity_type, entity_id, item_state, message)
+                       values (%s, 'unit', %s, 'imported', 'Canonical inventory metadata')""",
+                    (batch_id, unit_id),
+                )
+                cur.execute(
                     """
                     insert into scripture.unit_locators
                       (work_id, unit_id, edition_id, section_label, verse_label, source_id, locator_note)
@@ -170,19 +185,32 @@ def import_rows(conn: Any, rows: list[dict[str, Any]], source_id: str, commit: b
                      row.get("edition_verse_label") or row["canonical_ref"].split(".")[-1],
                      source_id),
                 )
-                if not cur.fetchone():
+                locator = cur.fetchone()
+                if locator:
+                    locator_id = locator[0]
+                else:
                     cur.execute(
-                        "select section_label, verse_label, source_id from scripture.unit_locators where unit_id = %s and edition_id = %s",
+                        "select id, section_label, verse_label, source_id from scripture.unit_locators where unit_id = %s and edition_id = %s",
                         (unit_id, editions[edition_key]),
                     )
-                    locator = cur.fetchone()
+                    existing_locator = cur.fetchone()
+                    if not existing_locator:
+                        raise ValueError(f"Could not resolve locator for {row['canonical_ref']}")
+                    locator_id, section_label, verse_label, locator_source_id = existing_locator
                     expected_locator = (
                         row.get("edition_section_label") or row["section_path"],
                         row.get("edition_verse_label") or row["canonical_ref"].split(".")[-1],
                         source_id,
                     )
-                    if locator != expected_locator:
+                    if (section_label, verse_label, locator_source_id) != expected_locator:
                         raise ValueError(f"Existing edition locator conflicts for {row['canonical_ref']}")
+                cur.execute(
+                    """insert into scripture.import_batch_items
+                       (batch_id, entity_type, entity_id, item_state, message)
+                       values (%s, 'locator', %s, 'imported', 'Edition-specific locator metadata')""",
+                    (batch_id, locator_id),
+                )
+            cur.execute("update scripture.import_batches set completed_at = now() where id = %s", (batch_id,))
         if commit:
             conn.commit()
         else:
@@ -195,6 +223,7 @@ def main() -> int:
     parser.add_argument("csv_file", type=Path)
     parser.add_argument("--database-url", default=None, help="Disposable/local PostgreSQL connection URL; or set DATABASE_URL")
     parser.add_argument("--source-id", required=True, help="Existing scripture.sources UUID documenting this inventory")
+    parser.add_argument("--batch-name", default=None, help="Audit label for this import batch (defaults to CSV filename)")
     parser.add_argument("--commit", action="store_true", help="Actually commit inventory metadata; default is dry-run/rollback")
     args = parser.parse_args()
     try:
@@ -207,7 +236,7 @@ def main() -> int:
         if psycopg is None:
             raise ValueError('Install psycopg v3: python -m pip install "psycopg[binary]"')
         with psycopg.connect(args.database_url) as conn:
-            import_rows(conn, rows, args.source_id, args.commit)
+            import_rows(conn, rows, args.source_id, args.commit, args.batch_name or args.csv_file.stem)
         print(f"{'COMMITTED' if args.commit else 'DRY RUN PASSED'}: {len(rows)} inventory rows checked.")
         if not args.commit:
             print("No database changes were retained. Re-run with --commit to insert metadata.")
