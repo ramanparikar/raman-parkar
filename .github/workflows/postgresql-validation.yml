@@ -65,6 +65,7 @@ jobs:
         run: |
           node --check tabhai-prabhu-preview.js
           node --check tabhai-prabhu-reference-utils.js
+          node --check tabhai-prabhu-admin.js
           node --test tests/*.test.cjs
           python -m py_compile "$PACK_DIR/scripts/validate_inventory.py" "$PACK_DIR/scripts/import_inventory.py" "$PACK_DIR/scripts/test_import_inventory.py" "$PACK_DIR/scripts/validate_edition_candidates.py" "$PACK_DIR/scripts/validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_bg_baseline.py" "$PACK_DIR/scripts/test_validate_inventory.py" "$PACK_DIR/scripts/validate_pack.py" "$PACK_DIR/scripts/validate_rights_register.py" "$PACK_DIR/scripts/test_validate_rights_register.py" "$PACK_DIR/scripts/test_validate_edition_candidates.py" "$PACK_DIR/scripts/validate_edition_volumes.py" "$PACK_DIR/scripts/test_validate_edition_volumes.py"
           python "$PACK_DIR/scripts/validate_pack.py"
