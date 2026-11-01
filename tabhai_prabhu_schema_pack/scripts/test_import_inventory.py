@@ -60,21 +60,21 @@ class InventoryImporterTests(unittest.TestCase):
     def test_rejects_section_path_mismatch(self):
         with self.assertRaisesRegex(ValueError, "section_path does not agree"):
             self.read_csv(
-                "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\\n"
-                "BG,ED1,Chapter 3,BG.02.047,verse,47,Source\\n"
+                "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\n"
+                "BG,ED1,Chapter 3,BG.02.047,verse,47,Source\n"
             )
 
     def test_accepts_srimat_bhagavatam_section_path(self):
         rows = self.read_csv(
-            "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\\n"
-            "SB,ED1,Canto 1 Chapter 2,SB.01.02.006,verse,6,Source\\n"
+            "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\n"
+            "SB,ED1,Canto 1 Chapter 2,SB.01.02.006,verse,6,Source\n"
         )
         self.assertEqual(rows[0]["canonical_ref"], "SB.01.02.006")
 
     def test_accepts_caitanya_caritamrita_section_path(self):
         rows = self.read_csv(
-            "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\\n"
-            "CC,ED1,Adi-lila Chapter 2,CC.ADI.02.006,verse,6,Source\\n"
+            "work_code,edition_code,section_path,canonical_ref,unit_kind,sequence_no,inventory_source\n"
+            "CC,ED1,Adi-lila Chapter 2,CC.ADI.02.006,verse,6,Source\n"
         )
         self.assertEqual(rows[0]["canonical_ref"], "CC.ADI.02.006")
 
