@@ -185,3 +185,8 @@ or numbering has been verified.
 Both search contracts return the underlying `source_id` alongside the canonical
 reference and edition identifier. The server-side application can use this provenance
 key to resolve the bibliographic source record and construct an attributable answer.
+
+The inventory validator and importer cross-check `section_path` against the canonical
+reference for all three works: BG chapter, SB canto and chapter, and CC lila and
+chapter. This guards against attaching a verse to the wrong chapter while preserving
+edition-specific printed labels and page numbers in the locator record.
