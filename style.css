@@ -194,5 +194,7 @@ footer.site-footer{position:relative;overflow:hidden;background:radial-gradient(
 @media(max-width:650px){.stuti-feature{grid-template-columns:1fr;gap:14px}.stuti-feature-image img{height:270px}.stuti-feature-copy{padding:10px 7px}.stuti-grid{grid-template-columns:1fr}.stuti-card{display:grid;grid-template-columns:112px minmax(0,1fr)}.stuti-card img{height:100%;min-height:145px}.stuti-card>div{padding:13px}.verse-columns,.meaning-columns{grid-template-columns:1fr}.verse-block{padding:18px 0}.reading-tools span{font-size:.72rem}}
 
 
-/* Decorative green check beside the Raman Parikar header brand */
-.brand::after{content:"✓";display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;flex:0 0 19px;border-radius:50%;background:#218c4a;color:#fff;font-family:Arial,sans-serif;font-size:12px;font-weight:800;line-height:1;box-shadow:0 0 0 2px rgba(33,140,74,.13)}
+
+/* Green check displayed beside the homepage title */
+.home-brand-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.green-check{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:#218c4a;color:#fff;font-family:Arial,sans-serif;font-size:19px;font-weight:800;line-height:1;box-shadow:0 0 0 3px rgba(33,140,74,.14);vertical-align:middle}
